@@ -22,9 +22,9 @@ The platform enables team members to examine entire sessions, allowing drivers a
 
 ### 🏗️ Architecture
 * **Front-end:** Next.js with shadcn/ui (utilizing Tailwind CSS)
-✨ Provides a responsive and interactive user interface.
+  * ✨ Provides a responsive and interactive user interface.
 * **Back-end:** Flask (Python)
-🐍 Manages data processing, API endpoints, and server-side functionality.
+  * 🐍 Manages data processing, API endpoints, and server-side functionality.
 
 ### 💡 Key Features
 * **Live Data Visualization:** Real-time monitoring of RPM, Speed, and Engine Temperature with line graphs and dials for rapid comparison.
