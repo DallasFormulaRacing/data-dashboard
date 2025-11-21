@@ -6,7 +6,15 @@ module.exports = {
     "./components/**/*.{ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        utdOrange: "#e87500", // UTD official orange
+        utdGreen: "#154734",  // UTD official green
+      },
+      height: {
+        chart: "300px", // Custom height for charts
+      },
+    },
   },
   plugins: [],
 };
