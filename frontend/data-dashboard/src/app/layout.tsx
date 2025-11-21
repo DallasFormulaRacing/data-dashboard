@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Topbar from "../components/ui/topbar";
 import Sidebar from "../components/ui/sidebar"
+import { NotificationProvider } from "@/components/ui/notifications";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,9 @@ export default function RootLayout({
             </div>
           </main>
         </div>
+        <NotificationProvider>
+          {children}
+        </NotificationProvider>
       </body>
     </html>
   );
