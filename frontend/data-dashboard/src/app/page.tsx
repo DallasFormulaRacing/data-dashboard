@@ -5,6 +5,11 @@ import dynamic from "next/dynamic"
 import { useNotifications, NotificationControlButton } from "@/components/ui/notifications"
 import { Chatbot } from "@/components/ui/chatbot"
 import { useEffect, useRef } from "react"
+import TireDegradation from "@/components/ui/TireDegradation" 
+import LiveDataGraphs from "@/components/ui/LiveDataGraphs"
+import CompassDial from "@/components/ui/CompassDial"
+import ColumnSelector from "@/components/ui/ColumnSelector"
+import DFRCarProtoTireDeg from "@/components/images/DFRCarProtoTireDeg.png"
 
 // Dynamically import RouteMap since Leaflet depends on browser APIs
 const RouteMap = dynamic(() => import("@/components/ui/route-map"), {
@@ -109,6 +114,18 @@ export default function DashboardPage() {
           </div>
         </div>
       </section>
+
+      {/* Tire Degradation Graph */}
+          <section className="py-8 px-4">
+            <h2 className="text-2xl font-semibold mb-4 text-center">Tire Degradation</h2>
+            <TireDegradation applyExponential={true} normalize={true} />
+          </section>
+    
+          {/* Live Telemetry Graphs */}
+          <section className="py-8 px-4">
+            <h2 className="text-2xl font-semibold mb-4 text-center">Live Car Telemetry</h2>
+            <LiveDataGraphs />
+          </section>
 
       {/* Hidden anchor points for notification links */}
       <div id="compile-error-details" className="hidden"></div>

@@ -37,13 +37,12 @@ export default function RootLayout({
           {/* Main content area */}
           <main className="flex-1 p-4 pl-0">
             <div className="bg-white rounded-lg h-full w-full p-6">
-              {children}
+              <NotificationProvider>
+                {children}
+              </NotificationProvider>
             </div>
           </main>
         </div>
-        <NotificationProvider>
-          {children}
-        </NotificationProvider>
       </body>
     </html>
   );

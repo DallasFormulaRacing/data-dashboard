@@ -4,7 +4,7 @@ import { Autour_One } from "next/font/google";
 import SidebarButton from "./sidebar-button";
 import ProfileBox from "./profile-box";
 import { useState, useRef, useEffect } from "react";
-import logo from "../../../../../dfr-logo-tyre.png";
+import logo from "../images/dfr-logo-tyre.png";
 import { PlusIcon, ViewColumnsIcon, Bars3Icon, BoltIcon, CpuChipIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 
 export default function Sidebar() {
