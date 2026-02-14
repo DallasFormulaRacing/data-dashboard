@@ -7,13 +7,11 @@ PM - [Sai Chauhan](https://discord.com/users/342061974600810506)
 ### 👥 Contributors
 * [Arjun Nayak](https://discord.com/users/143942073639239681)
 #### Back-end
-* [Muhammad Amsal Imran](https://discord.com/users/624532981507293214)
 * [Prakrit Chauhan](https://discord.com/users/701425922535850035)
 * [Saiesh Kesireddy](https://discord.com/users/349665003697340417)
 #### Front-end
 * [Anhaar Wasi](https://discord.com/users/431574165884108804)
-* [Gokul Sai Avaneesh Pulakhandam](https://discord.com/users/)
-* [Shriya Shenoj](https://discord.com/users/1410025330395189349)
+* [Bhuvi Thiriveedhi](https://discord.com/users/1004910909250093056)
 
 ### 🚀 Description
 The **Web Dashboard** is a comprehensive platform designed for the analysis and visualization of racing session data. It integrates with a PostgreSQL database to provide advanced tools for quadrant analysis, driver comparisons, and live session dashboards.
