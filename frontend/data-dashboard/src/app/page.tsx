@@ -5,11 +5,11 @@ import dynamic from "next/dynamic"
 import { useNotifications, NotificationControlButton } from "@/components/ui/notifications"
 import { Chatbot } from "@/components/ui/chatbot"
 import { useEffect, useRef } from "react"
+import TireDegradation from "@/components/ui/TireDegradation" 
 import LiveDataGraphs from "@/components/ui/LiveDataGraphs"
 import CompassDial from "@/components/ui/CompassDial"
 import ColumnSelector from "@/components/ui/ColumnSelector"
 import DFRCarProtoTireDeg from "@/components/images/DFRCarProtoTireDeg.png"
-import AddFilterButton from "@/components/ui/add-filter-button"
 
 // Dynamically import RouteMap since Leaflet depends on browser APIs
 const RouteMap = dynamic(() => import("@/components/ui/route-map"), {
@@ -80,19 +80,52 @@ export default function DashboardPage() {
   return (
     <main className="p-6 space-y-6">
       {/* Draggable Control Button */}
-      {/* <NotificationControlButton /> */}
+      <NotificationControlButton />
       
       {/* Chatbot */}
       <Chatbot />
       
-      <div className="text-black">
-          <h1 className=" text-[50px]">Welcome, Anhaar</h1>
-          <AddFilterButton />
-          <div className="bg-white rounded-lg h-125 w-full border-2 border-gray-400 flex items-center justify-center">
-            <h1 className="text-xl text-grey-500 italic">Insert Graph Here</h1>
+      <header>
+        <h1 className="text-2xl font-bold text-primary">Web Dashboard</h1>
+        <p className="text-muted-foreground">
+          Overlay comparison graph and GPS Visualization components
+        </p>
+      </header>
+
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Velocity Chart */}
+        <div className="space-y-2">
+          <h2 className="text-lg font-semibold text-primary">
+            Velocity components vs Lap Time
+          </h2>
+          <div className="rounded-lg border border-border shadow-sm p-4">
+            <OverlayComparisonChart />
           </div>
-        {/* input graphs here */}
-      </div>
+        </div>
+
+        {/* GPS Route Visualization with velocity-based colors */}
+        <div className="space-y-2">
+          <h2 className="text-lg font-semibold text-primary">
+            GPS Route Visualization (Color-coded by velocity)
+          </h2>
+          <div className="rounded-lg overflow-hidden border border-border shadow-sm h-[500px]">
+            {/* Pass CSV file path from public folder */}
+            <RouteMap csvUrl="/data/lap data big.csv" zoom={18} className="h-full w-full" />
+          </div>
+        </div>
+      </section>
+
+      {/* Tire Degradation Graph */}
+          <section className="py-8 px-4">
+            <h2 className="text-2xl font-semibold mb-4 text-center">Tire Degradation</h2>
+            <TireDegradation applyExponential={true} normalize={true} />
+          </section>
+    
+          {/* Live Telemetry Graphs */}
+          <section className="py-8 px-4">
+            <h2 className="text-2xl font-semibold mb-4 text-center">Live Car Telemetry</h2>
+            <LiveDataGraphs />
+          </section>
 
       {/* Hidden anchor points for notification links */}
       <div id="compile-error-details" className="hidden"></div>
