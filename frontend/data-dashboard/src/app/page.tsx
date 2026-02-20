@@ -1,15 +1,9 @@
 "use client"
 
-import dynamic from "next/dynamic"
-import { useNotifications, NotificationControlButton } from "@/components/ui/9dab3a/Notification"
+import { useNotifications } from "@/components/ui/9dab3a/Notification"
 import { Chatbot } from "@/components/ui/9dab3a/Chatbot"
 import { useEffect, useRef } from "react"
-import AddFilterButton from "@/components/ui/30c4e3/ButtonAddFilter"
-
-// Dynamically import RouteMap since Leaflet depends on browser APIs
-const RouteMap = dynamic(() => import("@/components/ui/9dab3a/RouteMap"), {
-  ssr: false,
-})
+import BlankGraph from "@/components/ui/30c4e3/BlankGraph"
 
 export default function DashboardPage() {
   const { addNotification } = useNotifications();
@@ -73,20 +67,15 @@ export default function DashboardPage() {
   }, [addNotification]);
 
   return (
-    <main className="p-6 space-y-6">
-      {/* Draggable Control Button */}
-      {/* <NotificationControlButton /> */}
-      
-      {/* Chatbot */}
-      <Chatbot />
-      
-      <div className="text-black">
-          <h1 className=" text-[50px]">Welcome, Anhaar</h1>
-          <AddFilterButton />
-          <div className="bg-white rounded-lg h-125 w-full border-2 border-gray-400 flex items-center justify-center">
-            <h1 className="text-xl text-grey-500 italic">Insert Graph Here</h1>
-          </div>
-        {/* input graphs here */}
+    <main className="flex h-full w-full flex-col gap-4">
+      <div className="flex items-start justify-between">
+        <span className="text-black text-[50px]">Welcome, Anhaar</span>
+        <Chatbot />
+      </div>
+
+      <div className="grid w-full grid-cols-2 gap-4">
+        <BlankGraph />
+        <BlankGraph />
       </div>
 
       {/* Hidden anchor points for notification links */}

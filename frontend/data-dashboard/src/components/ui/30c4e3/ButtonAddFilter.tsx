@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from "react";
-import FilterModal from "./filter-modal";
-export default function AddFilterButton() {
+// import FilterModal from "./filter-modal";
+export default function ButtonAddFilter() {
 
     // const [color, setColor] = useState("lightgrey");
     const [modalOpen, setModalOpen] = useState(false);

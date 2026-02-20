@@ -2,6 +2,13 @@
 
 import React, { useState } from 'react';
 import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { BoltIcon, CpuChipIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+
+const iconMap: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
+    POWERTRAIN: Cog6ToothIcon,
+    EMBEDDED: CpuChipIcon,
+    BATTERY: BoltIcon,
+  };
 
 type Props = Readonly<{
     category: string;
@@ -14,6 +21,7 @@ type Props = Readonly<{
 export default function SidebarButton({ category, selected, editable, handleDelete, handleEdit }: Props) {
     const [editing, setEditing] = useState(false);
     const [value, setValue] = useState(category);
+    const CategoryIcon = !editable ? iconMap[category] : undefined;
 
     function startEdit(e: React.MouseEvent) {
         e.stopPropagation();
@@ -52,7 +60,7 @@ export default function SidebarButton({ category, selected, editable, handleDele
 
     return (
         <h2
-            className={`group flex justify-between items-center w-full min-h-[28px] min-w-0 cursor-pointer my-5 pl-9 transition-colors duration-300 text-[12px] ${selected ? 'bg-orange-500 text-white' : 'hover:text-orange-500'}`}
+            className={`group flex justify-between items-center w-full h-10 min-w-0 cursor-pointer pl-9 transition-colors duration-300 text-[12px] ${selected ? 'bg-orange-500 text-white' : 'hover:text-orange-500'}`}
         >
             <span className="flex-1 min-w-0 truncate">{category}</span>
 
@@ -63,6 +71,10 @@ export default function SidebarButton({ category, selected, editable, handleDele
                 <div onClick={startEdit}>
                     <PencilIcon className={`${editable ? 'block' : 'hidden'} transition-all text-white w-5 h-5 mr-2 py-1 opacity-0 group-hover:opacity-100 transition-colors duration-300 hover:text-orange-500 cursor-pointer`} />
                 </div>
+            </div>
+            
+            <div className='pr-3'>
+                {!editable && CategoryIcon && <CategoryIcon className={`w-6 h-6 cursor-pointer`} />}
             </div>
         </h2>
     );

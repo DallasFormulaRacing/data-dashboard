@@ -1,14 +1,14 @@
 'use client';
 
 import { Autour_One } from "next/font/google";
-import SidebarButton from "./sidebar-button";
-import ProfileBox from "./profile-box";
+import SidebarButton from "./ButtonSidebar";
+import ProfileBox from "./ProfileBox";
 import { useState, useRef, useEffect } from "react";
-import logo from "../images/dfr-logo-tyre.png";
+import logo from "../../images/dfr-logo-tyre.png";
 import { PlusIcon, ViewColumnsIcon, Bars3Icon, BoltIcon, CpuChipIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 
 export default function Sidebar() {
-  const categories = ['POWERTRAIN', 'EMBEDDED', 'BATTERY'];
+  const permanent_categories = ['POWERTRAIN', 'EMBEDDED', 'BATTERY'];
   const [clickedCategory, setClickedCategory] = useState('POWERTRAIN');
   const [editable_categories, set_editable_categories] = useState(['A', 'B', 'C']);
   const [collapsed, setCollapsed] = useState(false);
@@ -70,34 +70,38 @@ export default function Sidebar() {
   return (
     <div className={`dark bg-background text-foreground font-bold ${collapsed ? 'w-20' : 'w-[200px]'} h-screen flex flex-col py-4 transition-all duration-200`}> 
       {/* Top row: small logo + collapse toggle */}
-      <div className="flex items-center justify-between px-2 mb-2">
-        <img src={logo.src} alt="DFR Logo" className={`${collapsed ? 'w-8 ml-2' : 'w-24 ml-3'} h-auto`} />
-        <div className="flex items-center">
-          <button aria-label="collapse sidebar" onClick={() => setCollapsed(!collapsed)} className="p-2 mr-2 rounded hover:bg-gray-200">
-            <Bars3Icon className="w-6 h-6" />
-          </button>
-        </div>
+      <div className="flex items-center px-2 mb-2 ml-2 gap-3">
+        <img src={logo.src} alt="DFR Logo" className={`${collapsed ? 'hidden' : ''} h-auto w-8`} />
+        <button aria-label="collapse sidebar" onClick={() => setCollapsed(!collapsed)} className={`rounded hover:text-orange-500 ${collapsed ? 'pl-2' : ''}`}>
+          <Bars3Icon className="h-8 w-auto" />
+        </button>
+        <button onClick={handleAddClick} className={`flex items-center justify-center bg-black text-white text-[25px] cursor-pointer rounded-full hover:text-orange-500 active:bg-gray-800 ${collapsed ? 'hidden' : 'w-8 h-auto'}`}>
+          <PlusIcon />
+        </button>
       </div>
 
-      <div className="px-1 flex-1 flex flex-col">
-        {!collapsed && <h1 className="text-[18px] mb-3 mx-0 px-4">Presets</h1>}
+      <div className="flex-1 flex flex-col">
+        {/* {!collapsed && <h1 className="text-[18px] mb-3 mx-0 px-4">Presets</h1>} */}
 
-        <div className="w-full flex-1 overflow-y-auto">
-          {categories.map((preset) => {
+        <div className="w-full flex-1 overflow-y-auto mt-3">
+          {permanent_categories.map((preset) => {
             const Icon = iconMap[preset];
             return (
-              <div key={preset} onClick={() => handleClick(preset)} className={`${collapsed ? 'flex items-center justify-center my-1 p-1' : ''}`}>
+              <div key={preset} onClick={() => handleClick(preset)} className={`${collapsed ? 'h-10 flex items-center justify-center' : ''}`}>
                 {collapsed ? (
                   <Icon className={`w-6 h-6 ${clickedCategory === preset ? 'text-orange-500' : 'text-gray-400'} hover:text-orange-500 transition-colors duration-200 cursor-pointer`} />
                 ) : (
-                  <SidebarButton selected={clickedCategory === preset} category={preset} editable={false} handleDelete={() => { }} />
+                  <div>
+                    <SidebarButton selected={clickedCategory === preset} category={preset} editable={false} handleDelete={() => { }} />
+                    {/* <Icon className={`w-6 h-6 ${clickedCategory === preset ? 'text-orange-500' : 'text-gray-400'} hover:text-orange-500 transition-colors duration-200 cursor-pointer`} /> */}
+                  </div>
                 )}
               </div>
             );
           })}
-
+          <div className="h-10 w-full"></div>
           {editable_categories.map((preset) => (
-            <div key={preset} className={`${collapsed ? 'flex items-center justify-center my-1 p-1' : ''}`} onClick={!collapsed ? () => handleClick(preset) : undefined}>
+            <div key={preset} className={`${collapsed ? 'h-10 flex items-center justify-center' : ''}`} onClick={!collapsed ? () => handleClick(preset) : undefined}>
               {collapsed ? (
                   <div onClick={() => handleClick(preset)} className={`w-8 h-8 rounded-full bg-black border flex items-center justify-center text-sm ${clickedCategory === preset ? 'border-orange-500 text-orange-500' : 'border-white text-white'} hover:border-orange-500 hover:text-orange-500 transition-colors duration-200 cursor-pointer`}>{preset.charAt(0).toUpperCase()}</div>
                 ) : (
@@ -125,12 +129,6 @@ export default function Sidebar() {
               />
             </div>
           )}
-
-          <div className={`${collapsed ? 'flex items-center justify-center mt-4' : ''}`}>
-            <button onClick={handleAddClick} className={`pb-2 flex items-center justify-center bg-black text-white text-[25px] cursor-pointer rounded-full mb-1.5 hover:text-orange-500 active:bg-gray-800 ${collapsed ? 'w-8 h-8' : 'w-10 h-10 ml-7'}`}>
-              <PlusIcon className={`${collapsed ? 'w-4 h-4' : 'w-6 h-6'}`} />
-            </button>
-          </div>
         </div>
 
         <div className="mt-auto px-2">
