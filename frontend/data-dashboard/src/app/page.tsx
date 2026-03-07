@@ -156,23 +156,9 @@ export default function DashboardPage() {
       </div>
 
       <div ref={gridContainerRef} className="grid-stack dashboard-grid w-full">
-        <div className="grid-stack-item" gs-id="blank-graph-1" gs-x="0" gs-y="0" gs-w="1" gs-h="1" gs-min-w="1" gs-max-w="2" gs-min-h="1" gs-max-h="1">
-          <div className="grid-stack-item-content">
-            <BlankGraph />
-          </div>
-        </div>
-
-        <div className="grid-stack-item" gs-id="blank-graph-2" gs-x="1" gs-y="0" gs-w="1" gs-h="1" gs-min-w="1" gs-max-w="2" gs-min-h="1" gs-max-h="1">
-          <div className="grid-stack-item-content">
-            <BlankGraph />
-          </div>
-        </div>
-
-        <div className="grid-stack-item" gs-id="blank-graph-3" gs-x="0" gs-y="1" gs-w="2" gs-h="1" gs-min-w="1" gs-max-w="2" gs-min-h="1" gs-max-h="1">
-          <div className="grid-stack-item-content">
-            <BlankGraph />
-          </div>
-        </div>
+        <BlankGraph id="blank-graph-1" x={0} y={0} w={1} />
+        <BlankGraph id="blank-graph-2" x={1} y={0} w={1} />
+        <BlankGraph id="blank-graph-3" x={0} y={1} w={2} />
       </div>
 
       {/* Hidden anchor points for notification links */}
