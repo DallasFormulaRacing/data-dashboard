@@ -160,7 +160,6 @@ export default function DashboardPage() {
         <BlankGraph id="blank-graph-2" x={1} y={0} w={1} />
         <BlankGraph id="blank-graph-3" x={0} y={1} w={2} />
       </div>
-
       {/* Hidden anchor points for notification links */}
       <div id="compile-error-details" className="hidden"></div>
       <div id="warning-details" className="hidden"></div>
