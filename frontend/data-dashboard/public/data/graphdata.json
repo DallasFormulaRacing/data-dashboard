@@ -1,0 +1,23 @@
+{
+    "POWERTRAIN": {
+        "graphs": [
+            {"type": "blank", "id": 1, "x": 0, "y": 0, "w": 1 },
+            {"type": "blank", "id": 2, "x": 1, "y": 0, "w": 1 },
+            {"type": "blank", "id": 3, "x": 0, "y": 1, "w": 2 }
+        ]
+    }, 
+    "EMBEDDED": {
+        "graphs": [
+            {"type": "blank", "id": 1, "x": 0, "y": 0, "w": 1 },
+            {"type": "blank", "id": 2, "x": 1, "y": 0, "w": 1 },
+            {"type": "blank", "id": 3, "x": 0, "y": 1, "w": 2 }
+        ]
+    }, 
+    "BATTERY": {
+        "graphs": [
+            {"type": "blank", "id": 1, "x": 0, "y": 0, "w": 1 },
+            {"type": "blank", "id": 2, "x": 1, "y": 0, "w": 1 },
+            {"type": "blank", "id": 3, "x": 0, "y": 1, "w": 2 }
+        ]
+    } 
+}

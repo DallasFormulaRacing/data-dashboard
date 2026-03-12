@@ -146,4 +146,8 @@
     border: none;
     overflow: hidden;
   }
+
+  .dashboard-grid .grid-stack-item > .ui-resizable-handle {
+    z-index: 10;
+  }
 }

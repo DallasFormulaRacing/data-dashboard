@@ -1,6 +1,6 @@
 import ButtonAddFilter from "./ButtonAddFilter"
-
-type BlankGraphProps = {
+import TrashIcon from "@heroicons/react/24/outline/TrashIcon"
+type GraphProps = {
     id: string
     x: number
     y: number
@@ -22,7 +22,7 @@ export default function BlankGraph({
     maxW = 2,
     minH = 1,
     maxH = 1,
-}: BlankGraphProps) {
+}: GraphProps) {
     return (
         <div
             className="grid-stack-item"
@@ -38,7 +38,10 @@ export default function BlankGraph({
         >
             <div className="grid-stack-item-content">
                 <div className="h-full flex flex-col gap-2 overflow-hidden">
-                    <ButtonAddFilter />
+                    <div className="inline-block drag-handle cursor-grab">
+                        <ButtonAddFilter />
+                        <TrashIcon className="w-6 h-6 text-black hover:text-red-500" />
+                    </div>
                     <div className="bg-white rounded-lg flex-1 min-h-0 w-full border-2 border-gray-400 flex items-center justify-center overflow-hidden">
                         <h1 className="text-xl text-gray-500 italic">Insert Graph Here</h1>
                     </div>

@@ -2,14 +2,35 @@
 
 import { useNotifications } from "@/components/ui/9dab3a/Notification"
 import { Chatbot } from "@/components/ui/9dab3a/Chatbot"
-import { useEffect, useRef } from "react"
-import BlankGraph from "@/components/ui/30c4e3/BlankGraph"
+import { useEffect, useRef, useState } from "react"
 import { GridStack, type GridItemHTMLElement, type GridStackNode } from "gridstack"
+import graphdata from "public/data/graphdata.json"
+import BlankGraph from "@/components/ui/30c4e3/BlankGraph"
+import { BarChartComponent } from "@/components/ui/bar-chart"
+import { LineChartComponent } from "@/components/ui/line-chart"
+import { DialChartComponent } from "@/components/ui/dial-chart"
+type GraphItem = {
+  type: string
+  id: number
+  x: number
+  y: number
+  w: number
+}
+
+type DashboardData = {
+  [tab: string]: {
+    graphs: GraphItem[]
+  }
+}
 
 export default function DashboardPage() {
   const { addNotification } = useNotifications();
   const hasAddedNotification = useRef(false);
   const gridContainerRef = useRef<HTMLDivElement>(null)
+  const activeTab = "POWERTRAIN"
+  const [dashboardData, setDashboardData] = useState<DashboardData>(() =>
+    JSON.parse(JSON.stringify(graphdata)) as DashboardData
+  )
 
   // Automated notifications based on code compilation status
   useEffect(() => {
@@ -78,6 +99,7 @@ export default function DashboardPage() {
         margin: 16,
         float: false,
         animate: false,
+        handle: '.drag-handle',
       },
       gridContainerRef.current
     )
@@ -122,21 +144,80 @@ export default function DashboardPage() {
       })
     }
 
+    const syncGraphsFromGrid = (items?: GridStackNode[]) => {
+      const nodes = items?.length ? items : grid.engine.nodes
+      const layoutById = new Map<number, { x: number; y: number; w: number }>()
+
+      nodes.forEach((node) => {
+        const rawId = node.id ?? node.el?.getAttribute("gs-id")
+        const id = Number(rawId)
+        if (!Number.isFinite(id)) return
+
+        layoutById.set(id, {
+          x: node.x ?? 0,
+          y: node.y ?? 0,
+          w: node.w ?? 1,
+        })
+      })
+
+      if (!layoutById.size) return
+
+      setDashboardData((prev) => {
+        const tab = prev[activeTab]
+        if (!tab) return prev
+
+        let changed = false
+        const updatedGraphs = tab.graphs.map((graph) => {
+          const updated = layoutById.get(graph.id)
+          if (!updated) return graph
+
+          if (graph.x === updated.x && graph.y === updated.y && graph.w === updated.w) {
+            return graph
+          }
+
+          changed = true
+          return {
+            ...graph,
+            x: updated.x,
+            y: updated.y,
+            w: updated.w,
+          }
+        })
+
+        if (!changed) return prev
+
+        return {
+          ...prev,
+          [activeTab]: {
+            ...tab,
+            graphs: updatedGraphs,
+          },
+        }
+      })
+    }
+
     enforceTileBounds()
-    grid.on("change", (_event, items) => enforceTileBounds(items))
+    syncGraphsFromGrid()
+    grid.on("change", (_event, items) => {
+      enforceTileBounds(items)
+      syncGraphsFromGrid(items)
+    })
     grid.on("dragstop", (_event, el) => {
       const node = (el as GridItemHTMLElement).gridstackNode
       if (!node) return
       enforceTileBounds([node])
+      syncGraphsFromGrid([node])
     })
     grid.on("resizestop", (_event, el) => {
       const node = (el as GridItemHTMLElement).gridstackNode
       if (!node) return
       enforceTileBounds([node])
+      syncGraphsFromGrid([node])
     })
     grid.on("dropped", (_event, _prevNode, newNode) => {
       if (!newNode) return
       enforceTileBounds([newNode])
+      syncGraphsFromGrid([newNode])
     })
 
     return () => {
@@ -146,7 +227,7 @@ export default function DashboardPage() {
       grid.off("dropped")
       grid.destroy(false)
     }
-  }, [])
+  }, [activeTab])
 
   return (
     <main className="flex h-full w-full flex-col gap-4">
@@ -156,9 +237,23 @@ export default function DashboardPage() {
       </div>
 
       <div ref={gridContainerRef} className="grid-stack dashboard-grid w-full">
-        <BlankGraph id="blank-graph-1" x={0} y={0} w={1} />
-        <BlankGraph id="blank-graph-2" x={1} y={0} w={1} />
-        <BlankGraph id="blank-graph-3" x={0} y={1} w={2} />
+        {(dashboardData[activeTab]?.graphs ?? []).map((graph) => {
+          if (graph.type === "blank") {
+            return (
+              <BlankGraph
+                key={graph.id}
+                id={String(graph.id)}
+                x={graph.x}
+                y={graph.y}
+                w={graph.w}
+              />
+            )
+          }
+        })}
+
+        <BarChartComponent id="bar-chart" x={0} y={2} w={1} />
+        <LineChartComponent id="line-chart" x={1} y={0} w={1} />
+        <DialChartComponent id="dial-chart" x={0} y={1} w={2} />
       </div>
       {/* Hidden anchor points for notification links */}
       <div id="compile-error-details" className="hidden"></div>

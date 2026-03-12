@@ -1,8 +1,8 @@
  'use client';
 
 import React, { useState } from 'react';
-import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
-import { BoltIcon, CpuChipIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+// import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { BoltIcon, CpuChipIcon, Cog6ToothIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
 
 const iconMap: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
     POWERTRAIN: Cog6ToothIcon,
