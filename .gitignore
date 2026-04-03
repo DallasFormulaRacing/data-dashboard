@@ -11,6 +11,8 @@
 .vscode/
 
 # Backend
-
+__pycache__/
+*.pyc
+venv/
 
 # Frontend
