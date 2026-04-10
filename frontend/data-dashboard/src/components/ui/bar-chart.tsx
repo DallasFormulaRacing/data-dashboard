@@ -35,8 +35,8 @@ export function BarChartComponent({
     maxH = 1,
 } : GraphProps) {
   return (
-    <div
-            className="grid-stack-item"
+        <div
+          className="grid-stack-item"
             gs-id={id}
             gs-x={x}
             gs-y={y}
@@ -48,8 +48,8 @@ export function BarChartComponent({
             gs-max-h={maxH}
         >
             <div className="grid-stack-item-content">
-    <Card className="flex h-full w-full flex-col rounded-lg">
-      <CardHeader className="drag-handle cursor-grab py-3">
+    <Card className="flex h-full w-full flex-col rounded-lg bg-black text-white border-white/10">
+      <CardHeader className="drag-handle cursor-grab active:cursor-grabbing py-3">
         <CardTitle>Monthly Sales</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 p-3 pt-0">

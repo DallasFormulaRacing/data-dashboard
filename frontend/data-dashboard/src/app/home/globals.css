@@ -147,6 +147,15 @@
     overflow: hidden;
   }
 
+  .dashboard-dragging,
+  .dashboard-dragging * {
+    cursor: grabbing !important;
+  }
+
+  .dashboard-grid .drag-handle {
+    cursor: grab;
+  }
+
   .dashboard-grid .grid-stack-item > .ui-resizable-handle {
     z-index: 10;
   }

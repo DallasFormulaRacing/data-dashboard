@@ -198,6 +198,9 @@ export default function DashboardPage() {
 
     enforceTileBounds()
     syncGraphsFromGrid()
+    grid.on("dragstart", () => {
+      document.body.classList.add("dashboard-dragging")
+    })
     grid.on("change", (_event, items) => {
       enforceTileBounds(items)
       syncGraphsFromGrid(items)
@@ -219,9 +222,14 @@ export default function DashboardPage() {
       enforceTileBounds([newNode])
       syncGraphsFromGrid([newNode])
     })
+    grid.on("dragstop", () => {
+      document.body.classList.remove("dashboard-dragging")
+    })
 
     return () => {
+      document.body.classList.remove("dashboard-dragging")
       grid.off("change")
+      grid.off("dragstart")
       grid.off("dragstop")
       grid.off("resizestop")
       grid.off("dropped")

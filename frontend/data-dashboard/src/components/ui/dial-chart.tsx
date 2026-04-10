@@ -50,8 +50,8 @@ export function DialChartComponent({
       gs-max-h={maxH}
     >
       <div className="grid-stack-item-content">
-        <Card className="flex h-full w-full flex-col rounded-lg">
-          <CardHeader className="drag-handle cursor-grab py-3">
+        <Card className="flex h-full w-full flex-col rounded-lg bg-black text-white border-white/10">
+          <CardHeader className="drag-handle cursor-grab active:cursor-grabbing py-3">
             <CardTitle>Completion</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-1 items-center justify-center p-3 pt-0">
