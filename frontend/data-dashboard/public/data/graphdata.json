@@ -1,23 +1,110 @@
 {
-    "POWERTRAIN": {
-        "graphs": [
-            {"type": "blank", "id": 1, "x": 0, "y": 0, "w": 1 },
-            {"type": "blank", "id": 2, "x": 1, "y": 0, "w": 1 },
-            {"type": "blank", "id": 3, "x": 0, "y": 1, "w": 2 }
-        ]
-    }, 
-    "EMBEDDED": {
-        "graphs": [
-            {"type": "blank", "id": 1, "x": 0, "y": 0, "w": 1 },
-            {"type": "blank", "id": 2, "x": 1, "y": 0, "w": 1 },
-            {"type": "blank", "id": 3, "x": 0, "y": 1, "w": 2 }
-        ]
-    }, 
-    "BATTERY": {
-        "graphs": [
-            {"type": "blank", "id": 1, "x": 0, "y": 0, "w": 1 },
-            {"type": "blank", "id": 2, "x": 1, "y": 0, "w": 1 },
-            {"type": "blank", "id": 3, "x": 0, "y": 1, "w": 2 }
-        ]
-    } 
+  "POWERTRAIN": {
+    "graphs": [
+      {
+        "type": "line",
+        "id": 1,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "config": {
+          "title": "Speed, Throttle, Brake",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Speed",
+            "Throttle",
+            "Brake"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 4,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "config": {
+          "title": "Line Chart",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Gear"
+          ]
+        }
+      },
+      {
+        "type": "bar",
+        "id": 3,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "config": {
+          "title": "Fuel by Lap Time",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Fuel"
+          ]
+        }
+      }
+    ]
+  },
+  "EMBEDDED": {
+    "graphs": [
+      {
+        "type": "line",
+        "id": 4,
+        "x": 0,
+        "y": 0,
+        "w": 2,
+        "config": {
+          "title": "Water Temp and Tire Temp",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Water Temp",
+            "Tire Temp"
+          ]
+        }
+      }
+    ]
+  },
+  "BATTERY": {
+    "graphs": [
+      {
+        "type": "line",
+        "id": 2,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "config": {
+          "title": "Speed over time",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Speed"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 1,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "config": {
+          "title": "Throttle over time",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Throttle"
+          ]
+        }
+      }
+    ]
+  },
+  "hh": {
+    "graphs": []
+  }
 }

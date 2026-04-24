@@ -1,18 +1,24 @@
 'use client';
 
-import { useState } from "react";
-// import FilterModal from "./filter-modal";
-export default function ButtonAddFilter() {
+type Props = Readonly<{
+    onClick?: () => void;
+    title?: string;
+}>;
 
-    // const [color, setColor] = useState("lightgrey");
-    const [modalOpen, setModalOpen] = useState(false);
-    return ( <button className={`pb-2 flex items-center justify-center bg-white border border-gray-600 text-gray-600 text-[30px] cursor-pointer rounded-full mb-1.5 hover:bg-gray-200 active:bg-gray-300 w-10 h-10`}
-    onClick={() => {
-        setModalOpen(true);
-        console.log("hi")}}>
-    +</button>)
-    // {modalOpen ? <FilterModal /> : null})
-
-    
-    
+export default function ButtonAddFilter({ onClick, title = "Add graph" }: Props) {
+    return (
+        <button
+            type="button"
+            title={title}
+            aria-label={title}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-600 bg-white pb-1 text-[30px] text-gray-600 transition-colors hover:bg-gray-200 active:bg-gray-300"
+            onMouseDown={(event) => event.stopPropagation()}
+            onClick={(event) => {
+                event.stopPropagation()
+                onClick?.()
+            }}
+        >
+            +
+        </button>
+    )
 }

@@ -1,7 +1,36 @@
+"use client"
+
 import Image from "next/image"
+import { useEffect, useState } from "react"
 import logo from "../../components/images/dfr-logo-tyre.png"
 
+const AUTH_LOGIN_ROUTE = "/api/auth/login"
+
 export default function LoginPage() {
+    const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search)
+        const error = params.get("error")
+
+        if (error === "backend_unavailable") {
+            setErrorMessage("Backend auth service is offline. Start backend first, then retry login.")
+        }
+
+        const checkSession = async () => {
+            try {
+                const response = await fetch("/api/me", { method: "GET", cache: "no-store" })
+                if (response.ok) {
+                    window.location.href = "/home"
+                }
+            } catch {
+                // If backend is unavailable we keep users on login page and show message only when explicit login fails.
+            }
+        }
+
+        checkSession()
+    }, [])
+
     return (
         <main className="flex min-h-screen items-center justify-center bg-black px-4 py-8 text-white sm:px-6 lg:px-8">
             <section className="w-full max-w-md rounded-3xl border border-white/10 bg-white p-8 text-slate-900 shadow-2xl shadow-black/40 sm:p-10">
@@ -18,7 +47,7 @@ export default function LoginPage() {
                   - secondary footer note
                 */}
 
-                <form className="mt-8 space-y-5">
+                <form className="mt-8 space-y-5" action={AUTH_LOGIN_ROUTE} method="GET">
                     <div className="space-y-2">
                         <label htmlFor="discord" className="sr-only">
                             Discord login
@@ -29,6 +58,9 @@ export default function LoginPage() {
                     >
                         Sign in with Discord
                     </button>
+                    {errorMessage && (
+                        <p className="text-sm text-red-600">{errorMessage}</p>
+                    )}
                     </div>
                 </form>
             </section>

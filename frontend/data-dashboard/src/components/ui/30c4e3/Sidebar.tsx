@@ -1,33 +1,130 @@
 'use client';
 
-import { Autour_One } from "next/font/google";
 import SidebarButton from "./ButtonSidebar";
 import ProfileBox from "./ProfileBox";
 import { useState, useRef, useEffect } from "react";
 import logo from "../../images/dfr-logo-tyre.png";
-import { PlusIcon, ViewColumnsIcon, Bars3Icon, BoltIcon, CpuChipIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, Bars3Icon, BoltIcon, CpuChipIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 
 export default function Sidebar() {
-  const permanent_categories = ['POWERTRAIN', 'EMBEDDED', 'BATTERY'];
+  const defaultTabs = ['POWERTRAIN', 'EMBEDDED', 'BATTERY'];
+  const [availableTabs, setAvailableTabs] = useState<string[]>(defaultTabs);
+  const [customTabs, setCustomTabs] = useState<string[]>([]);
   const [clickedCategory, setClickedCategory] = useState('POWERTRAIN');
-  const [editable_categories, set_editable_categories] = useState(['A', 'B', 'C']);
   const [collapsed, setCollapsed] = useState(false);
   const [adding, setAdding] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const ensurePermanentTabs = (tabs: string[]) => {
+    const cleaned = tabs
+      .map((value) => String(value).trim())
+      .filter((value, index, self) => value.length > 0 && self.indexOf(value) === index);
+
+    const custom = cleaned.filter((tab) => !defaultTabs.includes(tab));
+    return [...defaultTabs, ...custom];
+  };
+
+  const emitTabsUpdated = (tabs: string[]) => {
+    const nextTabs = ensurePermanentTabs(tabs);
+    const nextCustomTabs = nextTabs.filter((tab) => !defaultTabs.includes(tab));
+    localStorage.setItem('dashboardTabs', JSON.stringify(nextTabs));
+    localStorage.setItem('dashboardCustomTabs', JSON.stringify(nextCustomTabs));
+    window.dispatchEvent(new CustomEvent('dashboard-tabs-updated', { detail: nextTabs }));
+  };
+
   function handleClick(preset: string) {
     setClickedCategory(preset);
+    window.dispatchEvent(new CustomEvent('dashboard-tab-selected', { detail: preset }));
   }
 
-  function handleDelete(categoryToDelete: string) {
-    console.log("deleting " + categoryToDelete);
-    set_editable_categories(editable_categories.filter(c => c !== categoryToDelete));
-  }
+  const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+    POWERTRAIN: Cog6ToothIcon,
+    EMBEDDED: CpuChipIcon,
+    BATTERY: BoltIcon,
+  };
+
+  useEffect(() => {
+    const syncTabs = () => {
+      const rawTabs = localStorage.getItem('dashboardTabs');
+      const rawCustomTabs = localStorage.getItem('dashboardCustomTabs');
+
+      let baseTabs = defaultTabs;
+      let storedCustomTabs: string[] = [];
+      let hasStoredTabs = false;
+
+      if (rawTabs) {
+        try {
+          const parsed = JSON.parse(rawTabs) as unknown;
+          if (Array.isArray(parsed)) {
+            const cleaned = parsed.map((value) => String(value).trim()).filter((value) => value.length > 0);
+            if (cleaned.length) {
+              baseTabs = ensurePermanentTabs(cleaned);
+              hasStoredTabs = true;
+            }
+          }
+        } catch {
+          baseTabs = defaultTabs;
+        }
+      }
+
+      if (hasStoredTabs) {
+        // dashboardTabs is authoritative when present (it mirrors graphdata.json).
+        storedCustomTabs = baseTabs.filter((tab) => !defaultTabs.includes(tab));
+      } else if (rawCustomTabs) {
+        try {
+          const parsed = JSON.parse(rawCustomTabs) as unknown;
+          if (Array.isArray(parsed)) {
+            storedCustomTabs = parsed
+              .map((value) => String(value).trim())
+              .filter((value) => value.length > 0 && !defaultTabs.includes(value));
+          }
+        } catch {
+          storedCustomTabs = [];
+        }
+      }
+
+      if (!storedCustomTabs.length) {
+        storedCustomTabs = baseTabs.filter((tab) => !defaultTabs.includes(tab));
+      }
+
+      const mergedTabs = ensurePermanentTabs([...baseTabs, ...storedCustomTabs]);
+      setCustomTabs(storedCustomTabs);
+      setAvailableTabs(mergedTabs.length ? mergedTabs : defaultTabs);
+    };
+
+    const handleTabsUpdated = (event: Event) => {
+      const fromEvent = (event as CustomEvent<string[]>).detail;
+      if (Array.isArray(fromEvent) && fromEvent.length) {
+        const cleaned = ensurePermanentTabs(fromEvent);
+        if (cleaned.length) {
+          setAvailableTabs(cleaned);
+          setCustomTabs(cleaned.filter((tab) => !defaultTabs.includes(tab)));
+          return;
+        }
+      }
+      syncTabs();
+    };
+
+    syncTabs();
+    window.addEventListener('dashboard-tabs-updated', handleTabsUpdated);
+
+    return () => {
+      window.removeEventListener('dashboard-tabs-updated', handleTabsUpdated);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!availableTabs.length) return;
+    if (!availableTabs.includes(clickedCategory)) {
+      const next = availableTabs[0];
+      setClickedCategory(next);
+      window.dispatchEvent(new CustomEvent('dashboard-tab-selected', { detail: next }));
+    }
+  }, [availableTabs, clickedCategory]);
 
   useEffect(() => {
     if (adding) {
-      // focus the input when adding starts
       inputRef.current?.focus();
     }
   }, [adding]);
@@ -39,12 +136,28 @@ export default function Sidebar() {
 
   function finalizeNewCategory() {
     const name = newCategory.trim();
-    if (name) {
-      if (!editable_categories.includes(name)) {
-        set_editable_categories(prev => [...prev, name]);
-      }
-      setClickedCategory(name);
+    if (!name) {
+      setNewCategory('');
+      setAdding(false);
+      return;
     }
+
+    if (availableTabs.includes(name)) {
+      setClickedCategory(name);
+      window.dispatchEvent(new CustomEvent('dashboard-tab-selected', { detail: name }));
+      setNewCategory('');
+      setAdding(false);
+      return;
+    }
+
+    const nextCustomTabs = [...customTabs, name];
+    const nextTabs = [...availableTabs, name];
+    setCustomTabs(nextCustomTabs);
+    setAvailableTabs(nextTabs);
+    localStorage.setItem('dashboardCustomTabs', JSON.stringify(nextCustomTabs));
+    emitTabsUpdated(nextTabs);
+    setClickedCategory(name);
+    window.dispatchEvent(new CustomEvent('dashboard-tab-selected', { detail: name }));
     setNewCategory('');
     setAdding(false);
   }
@@ -54,18 +167,43 @@ export default function Sidebar() {
     setAdding(false);
   }
 
-  function handleRename(oldName: string, newName: string) {
-    const trimmed = newName.trim();
-    if (!trimmed) return;
-    set_editable_categories(prev => prev.map(c => c === oldName ? trimmed : c));
-    if (clickedCategory === oldName) setClickedCategory(trimmed);
+  function handleDelete(categoryToDelete: string) {
+    if (!customTabs.includes(categoryToDelete)) return;
+
+    const nextCustomTabs = customTabs.filter((tab) => tab !== categoryToDelete);
+    const nextTabs = availableTabs.filter((tab) => tab !== categoryToDelete);
+
+    setCustomTabs(nextCustomTabs);
+    setAvailableTabs(nextTabs);
+    localStorage.setItem('dashboardCustomTabs', JSON.stringify(nextCustomTabs));
+    emitTabsUpdated(nextTabs);
+
+    if (clickedCategory === categoryToDelete && nextTabs.length) {
+      const next = nextTabs[0];
+      setClickedCategory(next);
+      window.dispatchEvent(new CustomEvent('dashboard-tab-selected', { detail: next }));
+    }
   }
 
-  const iconMap: { [k: string]: any } = {
-    POWERTRAIN: Cog6ToothIcon,
-    EMBEDDED: CpuChipIcon,
-    BATTERY: BoltIcon,
-  };
+  function handleRename(oldName: string, newName: string) {
+    const trimmed = newName.trim();
+    if (!trimmed || trimmed === oldName || availableTabs.includes(trimmed)) return;
+    if (!customTabs.includes(oldName)) return;
+
+    const nextCustomTabs = customTabs.map((tab) => (tab === oldName ? trimmed : tab));
+    const nextTabs = availableTabs.map((tab) => (tab === oldName ? trimmed : tab));
+
+    setCustomTabs(nextCustomTabs);
+    setAvailableTabs(nextTabs);
+    localStorage.setItem('dashboardCustomTabs', JSON.stringify(nextCustomTabs));
+    window.dispatchEvent(new CustomEvent('dashboard-tab-renamed', { detail: { oldName, newName: trimmed } }));
+    emitTabsUpdated(nextTabs);
+
+    if (clickedCategory === oldName) {
+      setClickedCategory(trimmed);
+      window.dispatchEvent(new CustomEvent('dashboard-tab-selected', { detail: trimmed }));
+    }
+  }
 
   return (
     <div className={`dark bg-background text-foreground font-bold ${collapsed ? 'w-20' : 'w-[200px]'} h-screen flex flex-col py-4 transition-all duration-200`}> 
@@ -84,31 +222,33 @@ export default function Sidebar() {
         {/* {!collapsed && <h1 className="text-[18px] mb-3 mx-0 px-4">Presets</h1>} */}
 
         <div className="w-full flex-1 overflow-y-auto mt-3">
-          {permanent_categories.map((preset) => {
+          {availableTabs.map((preset) => {
             const Icon = iconMap[preset];
+            const isEditable = customTabs.includes(preset);
             return (
               <div key={preset} onClick={() => handleClick(preset)} className={`${collapsed ? 'h-10 flex items-center justify-center' : ''}`}>
                 {collapsed ? (
-                  <Icon className={`w-6 h-6 ${clickedCategory === preset ? 'text-orange-500' : 'text-gray-400'} hover:text-orange-500 transition-colors duration-200 cursor-pointer`} />
+                  Icon ? (
+                    <Icon className={`w-6 h-6 ${clickedCategory === preset ? 'text-orange-500' : 'text-gray-400'} hover:text-orange-500 transition-colors duration-200 cursor-pointer`} />
+                  ) : (
+                    <div className={`w-8 h-8 rounded-full bg-black border flex items-center justify-center text-sm ${clickedCategory === preset ? 'border-orange-500 text-orange-500' : 'border-white text-white'} hover:border-orange-500 hover:text-orange-500 transition-colors duration-200 cursor-pointer`}>
+                      {preset.charAt(0).toUpperCase()}
+                    </div>
+                  )
                 ) : (
                   <div>
-                    <SidebarButton selected={clickedCategory === preset} category={preset} editable={false} handleDelete={() => { }} />
-                    {/* <Icon className={`w-6 h-6 ${clickedCategory === preset ? 'text-orange-500' : 'text-gray-400'} hover:text-orange-500 transition-colors duration-200 cursor-pointer`} /> */}
+                    <SidebarButton
+                      selected={clickedCategory === preset}
+                      category={preset}
+                      editable={isEditable}
+                      handleDelete={() => { handleDelete(preset) }}
+                      handleEdit={(newName: string) => { handleRename(preset, newName) }}
+                    />
                   </div>
                 )}
               </div>
             );
           })}
-          <div className="h-10 w-full"></div>
-          {editable_categories.map((preset) => (
-            <div key={preset} className={`${collapsed ? 'h-10 flex items-center justify-center' : ''}`} onClick={!collapsed ? () => handleClick(preset) : undefined}>
-              {collapsed ? (
-                  <div onClick={() => handleClick(preset)} className={`w-8 h-8 rounded-full bg-black border flex items-center justify-center text-sm ${clickedCategory === preset ? 'border-orange-500 text-orange-500' : 'border-white text-white'} hover:border-orange-500 hover:text-orange-500 transition-colors duration-200 cursor-pointer`}>{preset.charAt(0).toUpperCase()}</div>
-                ) : (
-                <SidebarButton selected={clickedCategory === preset} category={preset} editable={true} handleDelete={() => { handleDelete(preset) }} handleEdit={(newName: string) => { handleRename(preset, newName) }} />
-              )}
-            </div>
-          ))}
 
           {adding && (
             <div className="my-2 px-2">
