@@ -32,7 +32,6 @@ DFR_REDIRECT_URI = os.environ["DFR_REDIRECT_URI"]
 DFR_SCOPE = os.environ.get("DFR_SCOPE", "").strip()
 
 SESSION_SECRET = os.environ["SESSION_SECRET"]
-FRONTEND_SUCCESS_REDIRECT = os.environ.get("FRONTEND_SUCCESS_REDIRECT", "http://localhost:3000/home")
 
 STATE_COOKIE = "oauth_state"
 SESSION_COOKIE = "session"
@@ -289,7 +288,7 @@ async def auth_callback(request: Request, code: str, state: str):
 
     # Create session cookie for future /me calls
     session = create_session(user_row["discord_id"])
-    resp = RedirectResponse(url=FRONTEND_SUCCESS_REDIRECT, status_code=302)
+    resp = RedirectResponse(url="/me", status_code=302)
     resp.set_cookie(
         key=SESSION_COOKIE,
         value=session,
@@ -305,3 +304,34 @@ async def auth_callback(request: Request, code: str, state: str):
 @app.get("/me")
 def me(discord_id: str = Depends(get_current_user_id)):
     return get_user_from_db(discord_id)
+
+@app.post("/preset/create")
+async def create_preset(
+    request: Request,
+    discord_id: str = Depends(get_current_user_id)
+):
+    preset_json = await request.json()
+
+    stmt = text("""
+        UPDATE public.users
+        SET presets = presets || :preset::jsonb
+        WHERE discord_id = :discord_id
+        RETURNING
+            discord_id,
+            presets,
+            updated_at;
+    """)
+
+    with engine.begin() as conn:
+        row = conn.execute(
+            stmt,
+            {
+                "discord_id": discord_id,
+                "preset": json.dumps(preset_json),
+            }
+        ).mappings().one_or_none()
+
+    if not row:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return dict(row)

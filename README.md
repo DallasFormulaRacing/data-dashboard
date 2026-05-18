@@ -34,3 +34,21 @@ The platform enables team members to examine entire sessions, allowing drivers a
 
 ### 🎯 Objective
 To provide a platform that supports data-driven performance optimization in racing sessions, enabling teams to make informed decisions and improve overall efficiency and outcomes.
+
+## 🚀 Running Locally
+### Frontend
+```bash
+cd frontend/data-dashboard
+npm install
+npm run dev
+```
+
+### Backend
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn updated_app:app --port 8080 --reload
+```
+Ensure the .env file in backend is updated with the correct database credentials before serving the application.
