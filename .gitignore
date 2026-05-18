@@ -5,10 +5,10 @@
 *.env
 
 # JetBrains
-.idea/
+**/.idea/
 
 # Visual Studio Code
-.vscode/
+**/.vscode/
 
 # Backend
 __pycache__/
