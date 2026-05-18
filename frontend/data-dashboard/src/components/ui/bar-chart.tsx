@@ -2,55 +2,136 @@
 
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import {Card, CardContent, CardHeader, CardTitle,} from "@/components/ui/card"
-
 import { ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/components/ui/chart"
+import PencilSquareIcon from "@heroicons/react/24/outline/PencilSquareIcon"
+import TrashIcon from "@heroicons/react/24/outline/TrashIcon"
+import type { CsvRow } from "@/lib/csvDataset"
+import type { GraphConfig } from "@/types/graph"
+import { memo, useMemo } from "react"
 
-// with static data, followed sample on website
+type GraphProps = {
+    id: string
+    x: number
+    y: number
+    w: number
+    h?: number
+    minW?: number
+    maxW?: number
+    minH?: number
+    maxH?: number
+    config: GraphConfig
+    rows: CsvRow[]
+    onEdit?: () => void
+    onDelete?: () => void
+}
 
-const data = [
-  { month: "Jan", sales: 400 },
-  { month: "Feb", sales: 300 },
-  { month: "Mar", sales: 500 },
-  { month: "Apr", sales: 200 },
-]
+  const toNumber = (value: unknown) => {
+    const parsed = Number.parseFloat(String(value ?? "").replace(/,/g, "").trim())
+    return Number.isFinite(parsed) ? parsed : Number.NaN
+  }
 
-export function BarChartComponent() {
+function BarChartComponentBase({
+    id,
+    x,
+    y,
+    w,
+    h = 1,
+    minW = 1,
+    maxW = 2,
+    minH = 1,
+    maxH = 1,
+    config,
+    rows,
+    onEdit,
+    onDelete,
+} : GraphProps) {
+  const xKey = config.xKey ?? ""
+  const yKey = config.yKeys?.[0] ?? ""
+  
+  // Cache chartRows computation - only recompute if rows, xKey, or yKey change
+  const chartRows = useMemo(() => {
+    return rows
+      .map((row, index) => {
+        const yValue = toNumber(row[yKey])
+        return {
+          x: xKey ? (row[xKey] || String(index)) : String(index),
+          y: Number.isFinite(yValue) ? yValue : null,
+        }
+      })
+      .filter((row) => row.y !== null)
+      .slice(0, 300) // Limit to 300 data points for performance
+  }, [rows, xKey, yKey])
+
+  const canRender = Boolean(xKey && yKey && chartRows.length)
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Monthly Sales</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={{ sales: { label: "Sales" } }}>
-          <BarChart data={data}>
-            <Bar dataKey="value" fill="#f97316" radius={4} />
-            <CartesianGrid vertical={false} />
-            <XAxis dataKey="month" />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <Bar dataKey="sales" radius={4} />
-          </BarChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+        <div
+          className="grid-stack-item"
+            gs-id={id}
+            gs-x={x}
+            gs-y={y}
+            gs-w={w}
+            gs-h={h}
+            gs-min-w={minW}
+            gs-max-w={maxW}
+            gs-min-h={minH}
+            gs-max-h={maxH}
+        >
+            <div className="grid-stack-item-content">
+              <div className="relative h-full w-full">
+                <div className="absolute right-3 top-3 z-20 flex gap-2">
+                  <button
+                    type="button"
+                    title="Edit graph"
+                    aria-label="Edit graph"
+                    className="rounded-full border border-white/15 bg-black/70 p-2 text-white transition-colors hover:bg-sky-500/20 hover:text-sky-200"
+                    onMouseDown={(event) => event.stopPropagation()}
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      onEdit?.()
+                    }}
+                  >
+                    <PencilSquareIcon className="h-5 w-5" />
+                  </button>
+                <button
+                  type="button"
+                  title="Delete graph"
+                  aria-label="Delete graph"
+                  className="rounded-full border border-white/15 bg-black/70 p-2 text-white transition-colors hover:bg-red-500/20 hover:text-red-300"
+                  onMouseDown={(event) => event.stopPropagation()}
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    onDelete?.()
+                  }}
+                >
+                  <TrashIcon className="h-5 w-5" />
+                </button>
+                </div>
+                <Card className="flex h-full w-full flex-col rounded-lg bg-black text-white border-white/10">
+                  <CardHeader className="drag-handle cursor-grab active:cursor-grabbing py-3 pr-12">
+                    <CardTitle>{config.title || "Bar Chart"}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 p-3 pt-0">
+                    {canRender ? (
+                      <ChartContainer className="h-full w-full aspect-auto" config={{ series: { label: yKey || "Series" } }}>
+                        <BarChart data={chartRows}>
+                          <CartesianGrid vertical={false} />
+                          <XAxis dataKey="x" />
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                          <Bar dataKey="y" fill="#f97316" radius={4} />
+                        </BarChart>
+                      </ChartContainer>
+                    ) : (
+                      <div className="flex h-full items-center justify-center rounded-md border border-dashed border-white/30 bg-white/5 px-3 text-center text-sm text-white/75">
+                        Configure X and Y axes to display this bar chart.
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+    </div>
+    </div>
   )
 }
 
-// with live data from lib
-
-import { useLiveData } from "@/lib/liveData"
-
-
-export function BarChartComponent2() {
-  const data2 = useLiveData()
-
-  if (!data2) return <div>No data currently..</div>
-
-  return (
-    <BarChart width={400} height={300} data={data.info}>
-      <Bar dataKey="value" fill="#f97316" radius={4} />
-      <CartesianGrid vertical={false} />
-      <XAxis dataKey="month" />
-      <Bar dataKey="value" />
-    </BarChart>
-  )
-}
+export const BarChartComponent = memo(BarChartComponentBase)
