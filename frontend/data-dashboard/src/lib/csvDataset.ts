@@ -54,32 +54,49 @@ export function useCsvDataset(fileName: string, columnsToKeep?: string[]) {
         ws.onmessage = (event) => {
           if (cancelled) return
           try {
-            const newRow = JSON.parse(event.data)
+            const data = JSON.parse(event.data)
             
-            if (newRow.error) {
-              setError(newRow.error)
+            if (data.error) {
+              setError(data.error)
               return
             }
 
-            const stringifiedRow: CsvRow = {}
-            Object.entries(newRow).forEach(([key, value]) => {
-              stringifiedRow[key] = String(value)
-            })
-
-            setRows(prev => {
-              const next = [...prev, stringifiedRow]
-              if (next.length > 500) {
-                return next.slice(next.length - 500)
+            if (Array.isArray(data)) {
+              // It's the full CSV array!
+              const stringifiedRows = data.map((row: any) => {
+                const stringifiedRow: CsvRow = {}
+                Object.entries(row).forEach(([key, value]) => {
+                  stringifiedRow[key] = String(value)
+                })
+                return stringifiedRow
+              })
+              setRows(stringifiedRows)
+              if (stringifiedRows.length > 0) {
+                setColumns(Object.keys(stringifiedRows[0]))
               }
-              return next
-            })
-            
-            setColumns(prev => {
-               const newKeys = Object.keys(stringifiedRow)
-               if (prev.length === 0) return newKeys
-               return prev
-            })
-            setLoading(false)
+              setLoading(false)
+            } else {
+              // Single row streaming
+              const stringifiedRow: CsvRow = {}
+              Object.entries(data).forEach(([key, value]) => {
+                stringifiedRow[key] = String(value)
+              })
+
+              setRows(prev => {
+                const next = [...prev, stringifiedRow]
+                if (next.length > 500) {
+                  return next.slice(next.length - 500)
+                }
+                return next
+              })
+              
+              setColumns(prev => {
+                 const newKeys = Object.keys(stringifiedRow)
+                 if (prev.length === 0) return newKeys
+                 return prev
+              })
+              setLoading(false)
+            }
           } catch (e) {
             console.error("Failed to parse websocket message", e)
           }

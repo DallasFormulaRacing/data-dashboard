@@ -367,6 +367,25 @@ async def websocket_telemetry(
                                 parsed_row[k] = v
                         await websocket.send_json(parsed_row)
                         await asyncio.sleep(frequency_ms / 1000.0)
+        elif read_csv and not simulate:
+            if not os.path.exists(CSV_FILE_PATH):
+                await websocket.send_json({"error": "CSV file not found"})
+            else:
+                with open(CSV_FILE_PATH, mode='r', encoding='utf-8') as f:
+                    reader = csv.DictReader(f)
+                    all_rows = []
+                    for row in reader:
+                        parsed_row = {}
+                        for k, v in row.items():
+                            try:
+                                parsed_row[k] = float(v)
+                            except ValueError:
+                                parsed_row[k] = v
+                        all_rows.append(parsed_row)
+                    await websocket.send_json(all_rows)
+            # Keep connection open
+            while True:
+                await asyncio.sleep(1)
         else:
             while True:
                 data = await websocket.receive_text()
