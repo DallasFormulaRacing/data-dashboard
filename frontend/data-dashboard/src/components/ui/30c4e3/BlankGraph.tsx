@@ -1,6 +1,7 @@
 import ButtonAddFilter from "./ButtonAddFilter"
 import PencilSquareIcon from "@heroicons/react/24/outline/PencilSquareIcon"
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon"
+import { GripHorizontal } from "lucide-react"
 import { memo } from "react"
 type GraphProps = {
     id: string
@@ -74,8 +75,11 @@ function BlankGraphComponent({
                             <TrashIcon className="h-5 w-5" />
                         </button>
                     </div>
-                    <div className="drag-handle flex items-center justify-between px-4 py-3">
-                        <h2 className="text-lg font-semibold">Blank Graph</h2>
+                    <div className="drag-handle flex items-center justify-between px-4 py-3 cursor-grab active:cursor-grabbing">
+                        <div className="flex items-center">
+                            <GripHorizontal className="mr-2 h-5 w-5 text-white/30 shrink-0" />
+                            <h2 className="text-lg font-semibold">Blank Graph</h2>
+                        </div>
                         <ButtonAddFilter onClick={onAddGraph} />
                     </div>
                     <div className="flex min-h-0 flex-1 items-center justify-center px-4 pb-4">

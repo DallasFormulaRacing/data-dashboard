@@ -1,6 +1,7 @@
 "use client"
 
 import { RadialBarChart, RadialBar, PolarAngleAxis, ResponsiveContainer } from "recharts"
+import { GripHorizontal } from "lucide-react"
 
 import {Card, CardContent, CardHeader, CardTitle,} from "@/components/ui/card"
 import PencilSquareIcon from "@heroicons/react/24/outline/PencilSquareIcon"
@@ -110,7 +111,8 @@ function DialChartComponentBase({
           </button>
           </div>
           <Card className="flex h-full w-full flex-col rounded-lg bg-black text-white border-white/10">
-            <CardHeader className="drag-handle cursor-grab active:cursor-grabbing py-3 pr-12">
+            <CardHeader className="drag-handle flex flex-row items-center space-y-0 cursor-grab active:cursor-grabbing py-3 pr-12">
+              <GripHorizontal className="mr-2 h-5 w-5 text-white/30 shrink-0" />
               <CardTitle>{config.title || "Dial Chart"}</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-1 min-h-0 items-center justify-center p-3 pt-0">

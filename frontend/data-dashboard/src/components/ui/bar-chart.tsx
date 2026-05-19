@@ -1,6 +1,7 @@
 "use client"
 
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { GripHorizontal } from "lucide-react"
 import {Card, CardContent, CardHeader, CardTitle,} from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/components/ui/chart"
 import PencilSquareIcon from "@heroicons/react/24/outline/PencilSquareIcon"
@@ -108,15 +109,24 @@ function BarChartComponentBase({
                 </button>
                 </div>
                 <Card className="flex h-full w-full flex-col rounded-lg bg-black text-white border-white/10">
-                  <CardHeader className="drag-handle cursor-grab active:cursor-grabbing py-3 pr-12">
+                  <CardHeader className="drag-handle flex flex-row items-center space-y-0 cursor-grab active:cursor-grabbing py-3 pr-12">
+                    <GripHorizontal className="mr-2 h-5 w-5 text-white/30 shrink-0" />
                     <CardTitle>{config.title || "Bar Chart"}</CardTitle>
                   </CardHeader>
                   <CardContent className="flex-1 min-h-0 p-3 pt-0">
                     {canRender ? (
                       <ChartContainer className="h-full w-full aspect-auto" config={{ series: { label: yKey || "Series" } }}>
-                        <BarChart data={chartRows}>
+                        <BarChart data={chartRows} margin={{ top: 15, right: 10, left: 10, bottom: 20 }}>
                           <CartesianGrid vertical={false} />
-                          <XAxis dataKey="x" />
+                          <XAxis 
+                            dataKey="x" 
+                            label={{ value: xKey || "X Axis", position: 'insideBottom', offset: -15, fill: '#ffffff', opacity: 0.5, fontSize: 12 }} 
+                            tick={{ fill: '#ffffff', opacity: 0.5, fontSize: 12 }}
+                          />
+                          <YAxis 
+                            label={{ value: yKey || "Value", angle: -90, position: 'insideLeft', offset: 15, fill: '#ffffff', opacity: 0.5, fontSize: 12 }} 
+                            tick={{ fill: '#ffffff', opacity: 0.5, fontSize: 12 }}
+                          />
                           <ChartTooltip content={<ChartTooltipContent />} />
                           <Bar dataKey="y" fill="#f97316" radius={4} />
                         </BarChart>

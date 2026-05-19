@@ -4,17 +4,32 @@ import SidebarButton from "./ButtonSidebar";
 import ProfileBox from "./ProfileBox";
 import { useState, useRef, useEffect } from "react";
 import logo from "../../images/dfr-logo-tyre.png";
-import { PlusIcon, Bars3Icon, BoltIcon, CpuChipIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, BoltIcon, CpuChipIcon, Cog6ToothIcon, Bars3Icon } from '@heroicons/react/24/outline';
+import {
+  Sidebar as ShadcnSidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  useSidebar,
+  SidebarGroupLabel,
+  SidebarGroupAction,
+  SidebarGroupContent,
+} from "@/components/ui/sidebar";
 
 export default function Sidebar() {
   const defaultTabs = ['POWERTRAIN', 'EMBEDDED', 'BATTERY'];
   const [availableTabs, setAvailableTabs] = useState<string[]>(defaultTabs);
   const [customTabs, setCustomTabs] = useState<string[]>([]);
   const [clickedCategory, setClickedCategory] = useState('POWERTRAIN');
-  const [collapsed, setCollapsed] = useState(false);
   const [adding, setAdding] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const { open, setOpen } = useSidebar();
 
   const ensurePermanentTabs = (tabs: string[]) => {
     const cleaned = tabs
@@ -36,6 +51,7 @@ export default function Sidebar() {
   function handleClick(preset: string) {
     setClickedCategory(preset);
     window.dispatchEvent(new CustomEvent('dashboard-tab-selected', { detail: preset }));
+    window.dispatchEvent(new Event('dashboard-preset-clicked'));
   }
 
   const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -69,7 +85,6 @@ export default function Sidebar() {
       }
 
       if (hasStoredTabs) {
-        // dashboardTabs is authoritative when present (it mirrors graphdata.json).
         storedCustomTabs = baseTabs.filter((tab) => !defaultTabs.includes(tab));
       } else if (rawCustomTabs) {
         try {
@@ -130,7 +145,7 @@ export default function Sidebar() {
   }, [adding]);
 
   function handleAddClick() {
-    if (collapsed) setCollapsed(false);
+    if (!open) setOpen(true);
     setAdding(true);
   }
 
@@ -145,6 +160,7 @@ export default function Sidebar() {
     if (availableTabs.includes(name)) {
       setClickedCategory(name);
       window.dispatchEvent(new CustomEvent('dashboard-tab-selected', { detail: name }));
+      window.dispatchEvent(new Event('dashboard-preset-clicked'));
       setNewCategory('');
       setAdding(false);
       return;
@@ -158,6 +174,7 @@ export default function Sidebar() {
     emitTabsUpdated(nextTabs);
     setClickedCategory(name);
     window.dispatchEvent(new CustomEvent('dashboard-tab-selected', { detail: name }));
+    window.dispatchEvent(new Event('dashboard-preset-clicked'));
     setNewCategory('');
     setAdding(false);
   }
@@ -206,99 +223,85 @@ export default function Sidebar() {
   }
 
   return (
-    <div className={`dark bg-background text-foreground font-bold ${collapsed ? 'w-20' : 'w-[200px]'} h-screen flex flex-col py-4 transition-all duration-200`}> 
-      {/* Top row: small logo + collapse toggle */}
-      <div className="flex items-center px-2 mb-2 ml-2 gap-3">
-        <img src={logo.src} alt="DFR Logo" className={`${collapsed ? 'hidden' : ''} h-auto w-8`} />
-        <button aria-label="collapse sidebar" onClick={() => setCollapsed(!collapsed)} className={`rounded hover:text-orange-500 ${collapsed ? 'pl-2' : ''}`}>
-          <Bars3Icon className="h-8 w-auto" />
-        </button>
-        <button onClick={handleAddClick} className={`flex items-center justify-center bg-black text-white cursor-pointer rounded-full border border-white/10 hover:text-orange-500 hover:bg-white/5 hover:border-orange-500/30 ${collapsed ? 'hidden' : 'w-8 h-8'}`} title="Add new preset">
-          <PlusIcon className="w-5 h-5" />
-        </button>
-      </div>
-
-      <div className="flex-1 flex flex-col">
-        {/* {!collapsed && <h1 className="text-[18px] mb-3 mx-0 px-4">Presets</h1>} */}
-
-        <div className="w-full flex-1 overflow-y-auto mt-3">
-          {availableTabs.map((preset) => {
-            const Icon = iconMap[preset];
-            const isEditable = customTabs.includes(preset);
-            return (
-              <div key={preset} onClick={() => handleClick(preset)} className={`${collapsed ? 'h-10 flex items-center justify-center' : ''}`}>
-                {collapsed ? (
-                  Icon ? (
-                    <Icon className={`w-6 h-6 ${clickedCategory === preset ? 'text-orange-500' : 'text-gray-400'} hover:text-orange-500 transition-colors duration-200 cursor-pointer`} />
-                  ) : (
-                    <div className={`w-8 h-8 rounded-full bg-black border flex items-center justify-center text-sm ${clickedCategory === preset ? 'border-orange-500 text-orange-500' : 'border-white text-white'} hover:border-orange-500 hover:text-orange-500 transition-colors duration-200 cursor-pointer`}>
-                      {preset.charAt(0).toUpperCase()}
-                    </div>
-                  )
-                ) : (
-                  <div>
-                    <SidebarButton
-                      selected={clickedCategory === preset}
-                      category={preset}
-                      editable={isEditable}
-                      handleDelete={() => { handleDelete(preset) }}
-                      handleEdit={(newName: string) => { handleRename(preset, newName) }}
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })}
-
-          {!adding && (
-            collapsed ? (
-              <div className="h-12 flex items-center justify-center mt-2">
+    <ShadcnSidebar collapsible="icon" className="dark bg-black border-r-0">
+      <SidebarHeader className="p-4 pt-6 pb-2 flex items-center justify-center">
+        <SidebarMenu className="w-full">
+          <SidebarMenuItem className="w-full">
+            {open ? (
+              <div className="flex items-center justify-between w-full px-2 h-8">
+                <img src={logo.src} alt="DFR Logo" className="h-8 w-auto flex-shrink-0" />
                 <button
-                  onClick={handleAddClick}
-                  className="w-8 h-8 rounded-full bg-black border border-dashed border-white/30 flex items-center justify-center text-gray-400 hover:border-orange-500 hover:text-orange-500 cursor-pointer transition-colors duration-200"
-                  title="Add new preset"
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="p-1 rounded-md hover:bg-sidebar-accent text-white/70 hover:text-white transition-colors cursor-pointer flex items-center justify-center"
+                  title="Collapse Sidebar"
                 >
-                  <PlusIcon className="w-4 h-4" />
+                  <Bars3Icon className="h-6 w-6" />
                 </button>
               </div>
             ) : (
-              <button
-                onClick={handleAddClick}
-                className="mt-4 mx-2 flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-orange-500 hover:bg-white/5 cursor-pointer w-[calc(100%-16px)] transition-all duration-200 border border-dashed border-white/10 hover:border-orange-500/30 font-bold"
-              >
-                <PlusIcon className="w-4 h-4" />
-                <span>Add Preset</span>
-              </button>
-            )
-          )}
+              <div className="flex items-center justify-center w-full h-8">
+                <button
+                  type="button"
+                  onClick={() => setOpen(true)}
+                  className="p-1 rounded-md hover:bg-sidebar-accent text-white/70 hover:text-white transition-colors cursor-pointer flex items-center justify-center"
+                  title="Expand Sidebar"
+                >
+                  <Bars3Icon className="h-6 w-6" />
+                </button>
+              </div>
+            )}
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
 
-          {adding && (
-            <div className="my-2 px-2">
-              <input
-                ref={inputRef}
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                onBlur={finalizeNewCategory}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    finalizeNewCategory();
-                  } else if (e.key === 'Escape') {
-                    cancelNewCategory();
-                  }
-                }}
-                placeholder="New category"
-                className="w-full rounded bg-white/5 px-3 py-1 text-sm outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
-              />
-            </div>
-          )}
-        </div>
+      <SidebarContent>
+        <SidebarGroup className="transition-[padding] duration-200 group-data-[state=expanded]:pl-4 group-data-[state=expanded]:pr-6 group-data-[state=collapsed]:px-2">
+          <SidebarGroupLabel className="text-sidebar-foreground/50 font-bold uppercase tracking-wider text-[10px] group-data-[collapsible=icon]:mt-0">Presets</SidebarGroupLabel>
+          <SidebarGroupAction title="Add Preset" onClick={handleAddClick} className="hover:bg-orange-500/20 hover:text-orange-500 transition-colors group-data-[state=expanded]:right-6">
+            <PlusIcon /> <span className="sr-only">Add Preset</span>
+          </SidebarGroupAction>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {availableTabs.map((preset) => (
+                <SidebarButton
+                  key={preset}
+                  selected={clickedCategory === preset}
+                  category={preset}
+                  editable={customTabs.includes(preset)}
+                  onClick={() => handleClick(preset)}
+                  handleDelete={() => handleDelete(preset)}
+                  handleEdit={(newName: string) => handleRename(preset, newName)}
+                  icon={!customTabs.includes(preset) ? iconMap[preset] : undefined}
+                />
+              ))}
 
-        <div className="mt-auto px-2">
-          <ProfileBox collapsed={collapsed} name={"Anhaar W"} onLogout={() => { console.log('logout') }} />
-        </div>
-      </div>
-    </div>
-    
-    
+              {adding && (
+                <SidebarMenuItem>
+                  <div className="px-2 py-1 w-full">
+                    <input
+                      ref={inputRef}
+                      value={newCategory}
+                      onChange={(e) => setNewCategory(e.target.value)}
+                      onBlur={finalizeNewCategory}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') finalizeNewCategory();
+                        else if (e.key === 'Escape') cancelNewCategory();
+                      }}
+                      placeholder="New category"
+                      className="w-full rounded bg-sidebar-accent border border-sidebar-border px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-orange-500 text-white placeholder:text-gray-500"
+                    />
+                  </div>
+                </SidebarMenuItem>
+              )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter className="p-4">
+        <ProfileBox name="Anhaar W" onLogout={() => console.log('logout')} />
+      </SidebarFooter>
+    </ShadcnSidebar>
   );
 }

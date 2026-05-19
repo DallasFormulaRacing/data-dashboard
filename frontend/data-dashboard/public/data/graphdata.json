@@ -4,7 +4,7 @@
       {
         "type": "dial",
         "id": 2,
-        "x": 1,
+        "x": 0,
         "y": 0,
         "w": 1,
         "h": 1,
@@ -34,7 +34,7 @@
         "type": "line",
         "id": 4,
         "x": 0,
-        "y": 2,
+        "y": 1,
         "w": 1,
         "h": 1,
         "config": {
@@ -66,9 +66,25 @@
         "type": "line",
         "id": 7,
         "x": 0,
-        "y": 0,
+        "y": 2,
         "w": 1,
         "h": 2,
+        "config": {
+          "title": "Line Chart",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Speed"
+          ]
+        }
+      },
+      {
+        "type": "bar",
+        "id": 8,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
         "config": {
           "title": "Line Chart",
           "dataFile": "race-telemetry.csv",
@@ -121,7 +137,69 @@
       }
     ]
   },
-  "test": {
-    "graphs": []
+  "Anhaar": {
+    "graphs": [
+      {
+        "type": "line",
+        "id": 1,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Line Chart",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Speed"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 2,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Line Chart",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Speed"
+          ]
+        }
+      },
+      {
+        "type": "dial",
+        "id": 3,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Line Chart",
+          "dataFile": "race-telemetry.csv",
+          "valueKey": "Lap Time"
+        }
+      },
+      {
+        "type": "bar",
+        "id": 4,
+        "x": 1,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Line Chart",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Speed"
+          ]
+        }
+      }
+    ]
   }
 }

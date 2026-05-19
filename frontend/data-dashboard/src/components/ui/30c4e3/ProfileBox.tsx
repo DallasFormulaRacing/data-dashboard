@@ -1,31 +1,27 @@
 'use client';
 
+import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
-import React from 'react';
 
-export default function ProfileBox({ collapsed, name = 'User', onLogout }: Readonly<{ collapsed: boolean; name?: string; onLogout?: () => void }>) {
+export default function ProfileBox({ name = 'User', onLogout }: { name?: string, onLogout?: () => void }) {
   const initial = name ? name.charAt(0).toUpperCase() : '?';
 
   return (
-    <div className={`w-full ${collapsed ? 'flex items-center justify-center mb-4' : 'flex items-center justify-between mb-4 px-2'}`}>
-      {collapsed ? (
-        <div className="w-8 h-8 flex-shrink-0 h-8 rounded-full bg-black border border-white text-white flex items-center justify-center text-sm cursor-pointer" aria-hidden>
-          {initial}
-        </div>
-      ) : (
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 flex-shrink-0 rounded-full bg-black border border-white text-white flex items-center justify-center text-sm">{initial}</div>
-          <div className="flex flex-col min-w-0">
-            <span className="text-sm font-semibold truncate">{name}</span>
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground group hover:bg-sidebar-accent">
+          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-black text-white border border-white/20">
+            {initial}
           </div>
-        </div>
-      )}
-
-      {!collapsed && (
-        <button title="Logout" aria-label="Logout" onClick={() => onLogout && onLogout()} className="flex items-center text-sm text-gray-300 hover:text-red-500 transition-colors p-1 rounded">
-          <ArrowRightOnRectangleIcon className="w-5 h-5" />
-        </button>
-      )}
-    </div>
+          <div className="grid flex-1 text-left text-sm leading-tight ml-1">
+            <span className="truncate font-semibold text-white">{name}</span>
+          </div>
+          <ArrowRightOnRectangleIcon 
+            onClick={(e) => { e.stopPropagation(); onLogout?.(); }} 
+            className="ml-auto size-5 text-sidebar-foreground/50 group-hover:text-red-500 transition-colors" 
+          />
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
 }
