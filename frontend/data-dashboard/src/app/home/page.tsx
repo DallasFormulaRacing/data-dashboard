@@ -56,60 +56,12 @@ const createBlankGraph = (graphs: GraphItem[]): GraphItem => ({
   x: 0,
   y: 0,
   w: 1,
+  h: 1,
   config: createDefaultGraphConfig("blank"),
 })
 
 const packGraphs = (graphs: GraphItem[]): GraphItem[] => {
-  const sorted = [...graphs].sort((a, b) => {
-    if (a.y !== b.y) return a.y - b.y
-    if (a.x !== b.x) return a.x - b.x
-    return a.id - b.id
-  })
-
-  let row = 0
-  let nextCol: 0 | 1 = 0
-
-  return sorted.map((graph) => {
-    const width = graph.w === 2 ? 2 : 1
-
-    if (width === 2) {
-      if (nextCol === 1) {
-        row += 1
-        nextCol = 0
-      }
-
-      const packed = {
-        ...graph,
-        x: 0,
-        y: row,
-        w: 2,
-      }
-
-      row += 1
-      return packed
-    }
-
-    if (nextCol === 0) {
-      nextCol = 1
-      return {
-        ...graph,
-        x: 0,
-        y: row,
-        w: 1,
-      }
-    }
-
-    const packed = {
-      ...graph,
-      x: 1,
-      y: row,
-      w: 1,
-    }
-
-    row += 1
-    nextCol = 0
-    return packed
-  })
+  return [...graphs]
 }
 
 const BYPASS_AUTH = process.env.NEXT_PUBLIC_BYPASS_AUTH === "true"
@@ -214,6 +166,7 @@ const toDashboardData = (rawPresets: unknown): DashboardData | null => {
       const x = Number(graph.x)
       const y = Number(graph.y)
       const w = Number(graph.w)
+      const h = Number(graph.h)
 
       return {
         type,
@@ -221,6 +174,7 @@ const toDashboardData = (rawPresets: unknown): DashboardData | null => {
         x: Number.isFinite(x) ? x : 0,
         y: Number.isFinite(y) ? y : 0,
         w: Number.isFinite(w) && (w === 1 || w === 2) ? w : 1,
+        h: Number.isFinite(h) && h >= 1 ? h : 1,
         config: normalizeGraphConfig((item as { config?: unknown }).config, type),
       }
     })
@@ -647,7 +601,7 @@ export default function DashboardPage() {
     const grid = GridStack.init(
       {
         column: 2,
-        cellHeight: 680,
+        cellHeight: 340,
         margin: 16,
         float: false,
         animate: false,
@@ -677,29 +631,25 @@ export default function DashboardPage() {
         const needsUpdate =
           node.x !== targetX ||
           node.w !== targetWidth ||
-          node.h !== 1 ||
           node.minW !== 1 ||
           node.maxW !== 2 ||
-          node.minH !== 1 ||
-          node.maxH !== 1
+          node.minH !== 1
 
         if (!needsUpdate) return
 
         grid.update(node.el, {
           x: targetX,
           w: targetWidth,
-          h: 1,
           minW: 1,
           maxW: 2,
           minH: 1,
-          maxH: 1,
         })
       })
     }
 
     const syncGraphsFromGrid = (items?: GridStackNode[]) => {
       const nodes = items?.length ? items : grid.engine.nodes
-      const layoutById = new Map<number, { x: number; y: number; w: number }>()
+      const layoutById = new Map<number, { x: number; y: number; w: number; h: number }>()
 
       nodes.forEach((node) => {
         const rawId = node.id ?? node.el?.getAttribute("gs-id")
@@ -710,6 +660,7 @@ export default function DashboardPage() {
           x: node.x ?? 0,
           y: node.y ?? 0,
           w: node.w ?? 1,
+          h: node.h ?? 1,
         })
       })
 
@@ -725,7 +676,7 @@ export default function DashboardPage() {
           const updated = layoutById.get(graph.id)
           if (!updated) return graph
 
-          if (graph.x === updated.x && graph.y === updated.y && graph.w === updated.w) {
+          if (graph.x === updated.x && graph.y === updated.y && graph.w === updated.w && (graph.h ?? 1) === updated.h) {
             return graph
           }
 
@@ -735,6 +686,7 @@ export default function DashboardPage() {
             x: updated.x,
             y: updated.y,
             w: updated.w,
+            h: updated.h,
           }
         })
 
@@ -744,7 +696,7 @@ export default function DashboardPage() {
           packedGraphs.length === tab.graphs.length &&
           packedGraphs.every((graph, index) => {
             const current = tab.graphs[index]
-            return current && current.id === graph.id && current.x === graph.x && current.y === graph.y && current.w === graph.w
+            return current && current.id === graph.id && current.x === graph.x && current.y === graph.y && current.w === graph.w && (current.h ?? 1) === (graph.h ?? 1)
           })
 
         if (sameAsCurrent) return prev
@@ -807,6 +759,14 @@ export default function DashboardPage() {
     if (!grid || !container) return
 
     const widgets = Array.from(container.querySelectorAll<HTMLElement>(".grid-stack-item"))
+    const currentWidgetSet = new Set(widgets)
+
+    // Remove nodes from GridStack engine if React has unmounted their DOM elements
+    grid.engine.nodes.forEach((node) => {
+      if (node.el && !currentWidgetSet.has(node.el)) {
+        grid.removeWidget(node.el, false)
+      }
+    })
 
     widgets.forEach((widget) => {
       const alreadyRegistered = Boolean((widget as GridItemHTMLElement).gridstackNode)
@@ -894,6 +854,7 @@ export default function DashboardPage() {
                 x={graph.x}
                 y={graph.y}
                 w={graph.w}
+                h={graph.h}
                 onAddGraph={addGraph}
                 onEdit={() => editGraph(graph)}
                 onDelete={() => removeGraph(graph.id)}
@@ -909,6 +870,7 @@ export default function DashboardPage() {
                 x={graph.x}
                 y={graph.y}
                 w={graph.w}
+                h={graph.h}
                 config={graph.config}
                 rows={csvRows}
                 onEdit={() => editGraph(graph)}
@@ -925,6 +887,7 @@ export default function DashboardPage() {
                 x={graph.x}
                 y={graph.y}
                 w={graph.w}
+                h={graph.h}
                 config={graph.config}
                 rows={csvRows}
                 onEdit={() => editGraph(graph)}
@@ -941,6 +904,7 @@ export default function DashboardPage() {
                 x={graph.x}
                 y={graph.y}
                 w={graph.w}
+                h={graph.h}
                 config={graph.config}
                 rows={csvRows}
                 onEdit={() => editGraph(graph)}
@@ -956,6 +920,7 @@ export default function DashboardPage() {
               x={graph.x}
               y={graph.y}
               w={graph.w}
+              h={graph.h}
               onAddGraph={addGraph}
               onEdit={() => editGraph(graph)}
               onDelete={() => removeGraph(graph.id)}

@@ -39,7 +39,7 @@ function DialChartComponentBase({
   minW = 1,
   maxW = 2,
   minH = 1,
-  maxH = 1,
+  maxH,
   config,
   rows,
   onEdit,
@@ -113,7 +113,7 @@ function DialChartComponentBase({
             <CardHeader className="drag-handle cursor-grab active:cursor-grabbing py-3 pr-12">
               <CardTitle>{config.title || "Dial Chart"}</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-1 items-center justify-center p-3 pt-0">
+            <CardContent className="flex flex-1 min-h-0 items-center justify-center p-3 pt-0">
               {canRender ? (
                 <div className="h-full w-full">
                   <ResponsiveContainer width="100%" height="100%">

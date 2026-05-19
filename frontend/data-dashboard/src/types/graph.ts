@@ -18,6 +18,7 @@ export type GraphItem = {
   x: number
   y: number
   w: number
+  h?: number
   config: GraphConfig
 }
 

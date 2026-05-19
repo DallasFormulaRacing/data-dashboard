@@ -62,7 +62,7 @@ export const Chatbot: React.FC = () => {
       <button
         onClick={() => setSize('normal')}
         className="fixed z-[9998] w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 cursor-pointer group"
-        style={{ bottom: '-2px', left: '8px', backgroundColor: 'rgb(232, 117, 0)' }}
+        style={{ bottom: '24px', right: '24px', backgroundColor: 'rgb(232, 117, 0)' }}
         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgb(18, 71, 52)'}
         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgb(232, 117, 0)'}
         aria-label="Open chat"
@@ -77,7 +77,7 @@ export const Chatbot: React.FC = () => {
     return (
       <div 
         className="fixed z-[9998] w-96 h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col border-2"
-        style={{ bottom: '-2px', left: '8px', borderColor: 'rgb(18, 71, 52)' }}
+        style={{ bottom: '24px', right: '24px', borderColor: 'rgb(18, 71, 52)' }}
       >
         {/* Header */}
         <div className="text-white p-4 rounded-t-2xl flex items-center justify-between" style={{ backgroundColor: 'rgb(232, 117, 0)' }}>

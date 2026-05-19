@@ -14,6 +14,7 @@ type GraphItem = {
   x: number
   y: number
   w: number
+  h?: number
   config: {
     title: string
     dataFile: string
@@ -86,6 +87,7 @@ const parseDashboardData = (value: unknown): DashboardData | null => {
       const x = Number(graph.x)
       const y = Number(graph.y)
       const w = Number(graph.w)
+      const h = Number(graph.h)
       const graphType = graph.type
 
       return {
@@ -94,6 +96,7 @@ const parseDashboardData = (value: unknown): DashboardData | null => {
         x: Number.isFinite(x) ? x : 0,
         y: Number.isFinite(y) ? y : 0,
         w: Number.isFinite(w) && (w === 1 || w === 2) ? w : 1,
+        h: Number.isFinite(h) && h >= 1 ? h : 1,
         config: normalizeConfig((rawGraph as { config?: unknown }).config, graphType === "bar" || graphType === "line" || graphType === "dial" ? graphType : "blank"),
       }
     })

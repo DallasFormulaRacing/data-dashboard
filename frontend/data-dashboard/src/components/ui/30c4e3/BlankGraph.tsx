@@ -26,7 +26,7 @@ function BlankGraphComponent({
     minW = 1,
     maxW = 2,
     minH = 1,
-    maxH = 1,
+    maxH,
     onAddGraph,
     onEdit,
     onDelete,

@@ -132,7 +132,7 @@ interface NotificationContainerProps {
 
 const NotificationContainer: React.FC<NotificationContainerProps> = ({ notifications, removeNotification, showButtons }) => {
   return (
-    <div className="fixed bottom-4 right-4 z-[9999] pointer-events-none" style={{ width: '380px' }}>
+    <div className="fixed z-[9999] pointer-events-none" style={{ bottom: '96px', right: '24px', width: '380px' }}>
       <div className="pointer-events-auto flex flex-col gap-3">
         {notifications.map(notification => (
           <NotificationItem
@@ -155,7 +155,23 @@ interface NotificationItemProps {
 
 const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onDismiss, showButtons }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isFadingOut, setIsFadingOut] = useState(false);
   const styles = getTypeStyles(notification.type, notification.customColor);
+
+  const handleDismiss = useCallback(() => {
+    setIsFadingOut(true);
+    setTimeout(() => {
+      onDismiss();
+    }, 300);
+  }, [onDismiss]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleDismiss();
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, [handleDismiss]);
 
   const handleLinkClick = () => {
     if (notification.link) {
@@ -166,7 +182,15 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onDis
   return (
     <div
       className={`${styles.bg} ${styles.border} border-2 rounded-xl shadow-lg animate-slide-in-right w-full`}
-      style={notification.customColor ? { backgroundColor: notification.customColor } : undefined}
+      style={{
+        transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+        opacity: isFadingOut ? 0 : 1,
+        transform: isFadingOut ? 'translateX(100px)' : 'translateX(0)',
+        maxHeight: isFadingOut ? '0px' : '200px',
+        marginTop: isFadingOut ? '-12px' : '0px',
+        overflow: 'hidden',
+        backgroundColor: notification.customColor || undefined,
+      }}
     >
       <div className="p-4 flex flex-col">
         <div className="flex justify-between items-start gap-2">
@@ -193,7 +217,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onDis
           </div>
           
           <button
-            onClick={onDismiss}
+            onClick={handleDismiss}
             className={`${styles.text} hover:opacity-70 transition-opacity flex-shrink-0 cursor-pointer`}
             aria-label="Dismiss notification"
           >

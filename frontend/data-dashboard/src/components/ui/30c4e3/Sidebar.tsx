@@ -213,8 +213,8 @@ export default function Sidebar() {
         <button aria-label="collapse sidebar" onClick={() => setCollapsed(!collapsed)} className={`rounded hover:text-orange-500 ${collapsed ? 'pl-2' : ''}`}>
           <Bars3Icon className="h-8 w-auto" />
         </button>
-        <button onClick={handleAddClick} className={`flex items-center justify-center bg-black text-white text-[25px] cursor-pointer rounded-full hover:text-orange-500 active:bg-gray-800 ${collapsed ? 'hidden' : 'w-8 h-auto'}`}>
-          <PlusIcon />
+        <button onClick={handleAddClick} className={`flex items-center justify-center bg-black text-white cursor-pointer rounded-full border border-white/10 hover:text-orange-500 hover:bg-white/5 hover:border-orange-500/30 ${collapsed ? 'hidden' : 'w-8 h-8'}`} title="Add new preset">
+          <PlusIcon className="w-5 h-5" />
         </button>
       </div>
 
@@ -249,6 +249,28 @@ export default function Sidebar() {
               </div>
             );
           })}
+
+          {!adding && (
+            collapsed ? (
+              <div className="h-12 flex items-center justify-center mt-2">
+                <button
+                  onClick={handleAddClick}
+                  className="w-8 h-8 rounded-full bg-black border border-dashed border-white/30 flex items-center justify-center text-gray-400 hover:border-orange-500 hover:text-orange-500 cursor-pointer transition-colors duration-200"
+                  title="Add new preset"
+                >
+                  <PlusIcon className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleAddClick}
+                className="mt-4 mx-2 flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-orange-500 hover:bg-white/5 cursor-pointer w-[calc(100%-16px)] transition-all duration-200 border border-dashed border-white/10 hover:border-orange-500/30 font-bold"
+              >
+                <PlusIcon className="w-4 h-4" />
+                <span>Add Preset</span>
+              </button>
+            )
+          )}
 
           {adding && (
             <div className="my-2 px-2">
