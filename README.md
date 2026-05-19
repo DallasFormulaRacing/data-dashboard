@@ -19,10 +19,13 @@ The **Web Dashboard** is a comprehensive platform designed for the analysis and 
 The platform enables team members to examine entire sessions, allowing drivers and engineers to make data-driven decisions that optimize performance. The project is developed using modern web technologies to ensure a responsive, efficient, and user-friendly experience.
 
 ### 🏗️ Architecture
-* **Front-end:** Next.js with shadcn/ui (utilizing Tailwind CSS)
-  * ✨ Provides a responsive and interactive user interface.
-* **Back-end:** Flask (Python)
-  * 🐍 Manages data processing, API endpoints, and server-side functionality.
+* **Front-end:** Next.js with shadcn/ui and Recharts (Tailwind CSS)
+  * ✨ Interactive, responsive dashboard utilizing GridStack.js for custom drag-and-drop tiles.
+  * 📊 **Telemetry Buffer Hook:** Custom `useCsvDataset` React hook with live WebSocket listeners, maintaining a sliding-window data cache (500 data points) to populate charts smoothly in real time.
+* **Back-end:** FastAPI (Python) & SQLAlchemy
+  * 🐍 Modern asynchronous backend managing API endpoints, Discord OAuth2 user authentication, and persistent user-specific presets in a PostgreSQL database.
+  * 🔌 **WebSocket Real-Time Stream Engine:** High-performance `/ws/telemetry` WebSocket routing supporting dual modes (dynamic telemetry track simulation via automated row-by-row CSV generators, or bulk-array historical loading when streaming is disabled).
+  * 🏁 **DFR Subteam Grid Presets:** Pre-engineered telemetry layouts with custom-fit dashboards (Engine RPM, G-forces, APPS/BPS sensor logs, drive-by-wire calibration, etc.) customized for all 11 subteams: *Aerodynamics, Ergonomics, Manufacturing, Powertrain, Software, Suspension/Steering, Electrical, Composites, Driver, Embedded, and Battery*.
 
 ### 💡 Key Features
 * **Live Data Visualization:** Real-time monitoring of RPM, Speed, and Engine Temperature with line graphs and dials for rapid comparison.
@@ -39,6 +42,7 @@ To provide a platform that supports data-driven performance optimization in raci
 ### Frontend
 ```bash
 cd frontend/data-dashboard
+npm -v
 npm install
 npm run dev
 ```
@@ -52,3 +56,4 @@ pip install -r requirements.txt
 uvicorn updated_app:app --port 8080 --reload
 ```
 Ensure the .env file in backend is updated with the correct database credentials before serving the application.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
