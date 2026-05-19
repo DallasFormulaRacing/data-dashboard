@@ -1093,7 +1093,7 @@ function GraphConfigModal({
       if (!xKey && !yKeys.length) return ""
       const xPart = xKey || "[X Axis]"
       const yPart = yKeys.length > 0 ? yKeys.join(", ") : "[Y Axis]"
-      return `${xPart} by ${yPart}`
+      return `${yPart} by ${xPart}`
     } else if (type === "dial") {
       if (!valueKey) return ""
       return `${valueKey} Gauge`
@@ -1269,7 +1269,7 @@ function GraphConfigModal({
               <label className="text-sm font-semibold text-neutral-300">Graph Title</label>
               <input
                 value={state.title}
-                placeholder="e.g. RPM by Speed (Auto-generated)"
+                placeholder="e.g. Speed by RPM (Auto-generated)"
                 className="w-full h-10 rounded-md border border-white/10 bg-neutral-900 px-3 text-sm focus-visible:border-orange-500 focus-visible:ring-1 focus-visible:ring-orange-500 outline-none transition-all"
                 onChange={(event) => {
                   const val = event.target.value
