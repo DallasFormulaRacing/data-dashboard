@@ -8,9 +8,9 @@ import { useEffect, useRef, useState, memo } from "react"
 import { GridStack, type GridItemHTMLElement, type GridStackNode } from "gridstack"
 import graphdata from "public/data/graphdata.json"
 import BlankGraph from "@/components/ui/30c4e3/BlankGraph"
-import { BarChartComponent } from "@/components/ui/bar-chart"
-import { LineChartComponent } from "@/components/ui/line-chart"
-import { DialChartComponent } from "@/components/ui/dial-chart"
+import { BarChartComponent } from "@/components/ui/245d8d/ChartBar"
+import { LineChartComponent } from "@/components/ui/245d8d/ChartLine"
+import { DialChartComponent } from "@/components/ui/245d8d/ChartDial"
 import { useCsvDataset } from "@/lib/csvDataset"
 import {
   createDefaultGraphConfig,
