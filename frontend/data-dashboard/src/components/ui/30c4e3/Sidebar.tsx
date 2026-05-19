@@ -258,7 +258,7 @@ export default function Sidebar() {
       <SidebarContent>
         <SidebarGroup className="transition-[padding] duration-200 group-data-[state=expanded]:pl-4 group-data-[state=expanded]:pr-6 group-data-[state=collapsed]:px-2">
           <SidebarGroupLabel className="text-sidebar-foreground/50 font-bold uppercase tracking-wider text-[10px] group-data-[collapsible=icon]:mt-0">Presets</SidebarGroupLabel>
-          <SidebarGroupAction title="Add Preset" onClick={handleAddClick} className="hover:bg-orange-500/20 hover:text-orange-500 transition-colors group-data-[state=expanded]:right-6">
+          <SidebarGroupAction title="Add Preset" onClick={handleAddClick} className="hover:bg-orange-500/20 hover:text-orange-500 transition-colors group-data-[state=expanded]:right-6 cursor-pointer">
             <PlusIcon /> <span className="sr-only">Add Preset</span>
           </SidebarGroupAction>
           <SidebarGroupContent>

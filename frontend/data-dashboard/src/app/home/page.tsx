@@ -924,6 +924,18 @@ export default function DashboardPage() {
             {isFirstLoad ? `Welcome, ${displayName}` : toTitleCase(activeTab)}
           </span>
           <ButtonAddFilter onClick={addGraph} title="Add new graph" />
+          <Button
+            type="button"
+            title="Add filter"
+            variant="outline"
+            className="h-[30px] rounded-md border border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50 active:bg-neutral-100 font-semibold text-xs px-3 shadow-xs flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
+            onClick={() => {}}
+          >
+            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+            </svg>
+            Add Filter
+          </Button>
           {!["POWERTRAIN", "EMBEDDED", "BATTERY"].includes(activeTab.toUpperCase()) && (
             <Button
               type="button"
