@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Data Dashboard",
   description: "Dallas Formula Racing dashboard",
+  icons: {
+    icon: "/home/favicon.png",
+  },
 }
 
 export default function RootLayout({
