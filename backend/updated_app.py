@@ -11,13 +11,17 @@ from typing import Any, Dict, List
 
 import httpx
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request, Response, HTTPException, Depends
+from fastapi import FastAPI, Request, Response, HTTPException, Depends, WebSocket, WebSocketDisconnect
 from fastapi.responses import RedirectResponse
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
 from starlette.middleware.sessions import SessionMiddleware
 
 load_dotenv()
+import asyncio
+import csv
+
+CSV_FILE_PATH = os.path.join(os.path.dirname(__file__), "../frontend/data-dashboard/public/data/race-telemetry.csv")
 
 # ---- Config ----
 DATABASE_URL = os.environ["DATABASE_URL"]
@@ -335,3 +339,39 @@ async def create_preset(
         raise HTTPException(status_code=404, detail="User not found")
 
     return dict(row)
+
+@app.websocket("/ws/telemetry")
+async def websocket_telemetry(
+    websocket: WebSocket,
+    read_csv: bool = False,
+    simulate: bool = False,
+    frequency_ms: int = 100
+):
+    await websocket.accept()
+    try:
+        if read_csv and simulate:
+            while True:
+                if not os.path.exists(CSV_FILE_PATH):
+                    await websocket.send_json({"error": "CSV file not found"})
+                    await asyncio.sleep(5)
+                    continue
+                
+                with open(CSV_FILE_PATH, mode='r', encoding='utf-8') as f:
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        parsed_row = {}
+                        for k, v in row.items():
+                            try:
+                                parsed_row[k] = float(v)
+                            except ValueError:
+                                parsed_row[k] = v
+                        await websocket.send_json(parsed_row)
+                        await asyncio.sleep(frequency_ms / 1000.0)
+        else:
+            while True:
+                data = await websocket.receive_text()
+                await websocket.send_text(f"Echo: {data}")
+    except WebSocketDisconnect:
+        print("Client disconnected from telemetry WebSocket.")
+    except Exception as e:
+        print(f"WebSocket Error: {e}")
