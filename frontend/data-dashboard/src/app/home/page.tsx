@@ -237,7 +237,19 @@ const toTitleCase = (str: string) => {
 
 
 export default function DashboardPage() {
-  const permanentTabs = ["POWERTRAIN", "EMBEDDED", "BATTERY"]
+  const permanentTabs = [
+    "POWERTRAIN",
+    "EMBEDDED",
+    "BATTERY",
+    "AERODYNAMICS",
+    "ERGONOMICS",
+    "MANUFACTURING",
+    "SOFTWARE",
+    "SUSPENSION/STEERING",
+    "ELECTRICAL",
+    "COMPOSITES",
+    "DRIVER"
+  ]
   const { addNotification } = useNotifications();
   const hasAddedNotification = useRef(false);
   const gridContainerRef = useRef<HTMLDivElement>(null)
@@ -936,7 +948,7 @@ export default function DashboardPage() {
             </svg>
             Add Filter
           </Button>
-          {!["POWERTRAIN", "EMBEDDED", "BATTERY"].includes(activeTab.toUpperCase()) && (
+          {!permanentTabs.includes(activeTab.toUpperCase()) && (
             <Button
               type="button"
               title="Clear preset"

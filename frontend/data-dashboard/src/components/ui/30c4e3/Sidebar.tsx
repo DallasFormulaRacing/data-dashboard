@@ -4,7 +4,20 @@ import SidebarButton from "./ButtonSidebar";
 import ProfileBox from "./ProfileBox";
 import { useState, useRef, useEffect } from "react";
 import logo from "../../images/dfr-logo-tyre.png";
-import { PlusIcon, BoltIcon, CpuChipIcon, Cog6ToothIcon, Bars3Icon } from '@heroicons/react/24/outline';
+import {
+  PlusIcon,
+  BoltIcon,
+  CpuChipIcon,
+  Cog6ToothIcon,
+  Bars3Icon,
+  SparklesIcon,
+  HeartIcon,
+  WrenchScrewdriverIcon,
+  CommandLineIcon,
+  AdjustmentsHorizontalIcon,
+  BeakerIcon,
+  UserIcon
+} from '@heroicons/react/24/outline';
 import {
   Sidebar as ShadcnSidebar,
   SidebarContent,
@@ -21,7 +34,19 @@ import {
 } from "@/components/ui/sidebar";
 
 export default function Sidebar() {
-  const defaultTabs = ['POWERTRAIN', 'EMBEDDED', 'BATTERY'];
+  const defaultTabs = [
+    'POWERTRAIN',
+    'EMBEDDED',
+    'BATTERY',
+    'AERODYNAMICS',
+    'ERGONOMICS',
+    'MANUFACTURING',
+    'SOFTWARE',
+    'SUSPENSION/STEERING',
+    'ELECTRICAL',
+    'COMPOSITES',
+    'DRIVER'
+  ];
   const [availableTabs, setAvailableTabs] = useState<string[]>(defaultTabs);
   const [customTabs, setCustomTabs] = useState<string[]>([]);
   const [clickedCategory, setClickedCategory] = useState('POWERTRAIN');
@@ -58,6 +83,14 @@ export default function Sidebar() {
     POWERTRAIN: Cog6ToothIcon,
     EMBEDDED: CpuChipIcon,
     BATTERY: BoltIcon,
+    AERODYNAMICS: SparklesIcon,
+    ERGONOMICS: HeartIcon,
+    MANUFACTURING: WrenchScrewdriverIcon,
+    SOFTWARE: CommandLineIcon,
+    "SUSPENSION/STEERING": AdjustmentsHorizontalIcon,
+    ELECTRICAL: BoltIcon,
+    COMPOSITES: BeakerIcon,
+    DRIVER: UserIcon,
   };
 
   useEffect(() => {

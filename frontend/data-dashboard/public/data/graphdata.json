@@ -2,96 +2,67 @@
   "POWERTRAIN": {
     "graphs": [
       {
-        "type": "dial",
-        "id": 2,
+        "type": "line",
+        "id": 1,
         "x": 0,
         "y": 0,
         "w": 1,
         "h": 1,
         "config": {
-          "title": "Line Chart",
+          "title": "Engine RPM",
           "dataFile": "race-telemetry.csv",
-          "valueKey": "Lap Time"
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Engine RPM"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 2,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Throttle & Brake Inputs",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Throttle",
+            "Brake"
+          ]
         }
       },
       {
         "type": "line",
         "id": 3,
-        "x": 1,
+        "x": 0,
         "y": 1,
         "w": 1,
         "h": 1,
         "config": {
-          "title": "Line Chart",
+          "title": "Water Temperature",
           "dataFile": "race-telemetry.csv",
           "xKey": "Lap Time",
           "yKeys": [
-            "Speed"
+            "Water Temp"
           ]
         }
       },
       {
-        "type": "line",
+        "type": "dial",
         "id": 4,
-        "x": 0,
+        "x": 1,
         "y": 1,
         "w": 1,
         "h": 1,
         "config": {
-          "title": "Line Chart",
+          "title": "Fuel Level",
           "dataFile": "race-telemetry.csv",
-          "xKey": "Lap Time",
-          "yKeys": [
-            "Speed"
-          ]
-        }
-      },
-      {
-        "type": "line",
-        "id": 6,
-        "x": 1,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "config": {
-          "title": "Line Chart",
-          "dataFile": "race-telemetry.csv",
-          "xKey": "Lap Time",
-          "yKeys": [
-            "Speed"
-          ]
-        }
-      },
-      {
-        "type": "line",
-        "id": 7,
-        "x": 0,
-        "y": 2,
-        "w": 1,
-        "h": 2,
-        "config": {
-          "title": "Line Chart",
-          "dataFile": "race-telemetry.csv",
-          "xKey": "Lap Time",
-          "yKeys": [
-            "Speed"
-          ]
-        }
-      },
-      {
-        "type": "bar",
-        "id": 8,
-        "x": 1,
-        "y": 0,
-        "w": 1,
-        "h": 1,
-        "config": {
-          "title": "Line Chart",
-          "dataFile": "race-telemetry.csv",
-          "xKey": "Lap Time",
-          "yKeys": [
-            "Speed"
-          ]
+          "valueKey": "Fuel",
+          "min": 0,
+          "max": 100
         }
       }
     ]
@@ -100,19 +71,51 @@
     "graphs": [
       {
         "type": "line",
-        "id": 4,
+        "id": 1,
         "x": 0,
         "y": 0,
         "w": 1,
         "h": 1,
         "config": {
-          "title": "Water Temp and Tire Temp",
+          "title": "Cooling & Tire Temps",
           "dataFile": "race-telemetry.csv",
           "xKey": "Lap Time",
           "yKeys": [
             "Water Temp",
             "Tire Temp"
           ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 2,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Speed vs Throttle Input",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Speed",
+            "Throttle"
+          ]
+        }
+      },
+      {
+        "type": "dial",
+        "id": 3,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Current Gear",
+          "dataFile": "race-telemetry.csv",
+          "valueKey": "Gear",
+          "min": 1,
+          "max": 6
         }
       }
     ]
@@ -121,18 +124,517 @@
     "graphs": [
       {
         "type": "line",
-        "id": 2,
+        "id": 1,
         "x": 0,
         "y": 0,
         "w": 1,
         "h": 1,
         "config": {
-          "title": "Speed over time",
+          "title": "Pack Temperature vs Cooling",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Tire Temp",
+            "Water Temp"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 2,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "State of Charge (SoC)",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Fuel"
+          ]
+        }
+      },
+      {
+        "type": "dial",
+        "id": 3,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Battery Charge %",
+          "dataFile": "race-telemetry.csv",
+          "valueKey": "Fuel",
+          "min": 0,
+          "max": 100
+        }
+      }
+    ]
+  },
+  "AERODYNAMICS": {
+    "graphs": [
+      {
+        "type": "line",
+        "id": 1,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Vehicle Speed Profile",
           "dataFile": "race-telemetry.csv",
           "xKey": "Lap Time",
           "yKeys": [
             "Speed"
           ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 2,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Aero Grip & G-Forces",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Lateral G",
+            "Longitudinal G"
+          ]
+        }
+      },
+      {
+        "type": "dial",
+        "id": 3,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Cornering G-Load",
+          "dataFile": "race-telemetry.csv",
+          "valueKey": "Lateral G",
+          "min": -2,
+          "max": 2
+        }
+      }
+    ]
+  },
+  "ERGONOMICS": {
+    "graphs": [
+      {
+        "type": "line",
+        "id": 1,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Driver Pedal Inputs",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Throttle",
+            "Brake"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 2,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "G-Force Body Loads",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Lateral G",
+            "Longitudinal G"
+          ]
+        }
+      },
+      {
+        "type": "bar",
+        "id": 3,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Throttle Application Profile",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Throttle"
+          ]
+        }
+      }
+    ]
+  },
+  "MANUFACTURING": {
+    "graphs": [
+      {
+        "type": "line",
+        "id": 1,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Run Speed Diagnostics",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Speed"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 2,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Braking Performance Profile",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Speed",
+            "Brake"
+          ]
+        }
+      },
+      {
+        "type": "bar",
+        "id": 3,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Gear Distribution",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Gear"
+          ]
+        }
+      }
+    ]
+  },
+  "SOFTWARE": {
+    "graphs": [
+      {
+        "type": "line",
+        "id": 1,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Engine RPM & Gear Correlation",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Engine RPM",
+            "Gear"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 2,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Drive-by-Wire Mapping",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Throttle",
+            "Speed"
+          ]
+        }
+      },
+      {
+        "type": "dial",
+        "id": 3,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Maximum Speed Captured",
+          "dataFile": "race-telemetry.csv",
+          "valueKey": "Speed",
+          "min": 0,
+          "max": 200
+        }
+      },
+      {
+        "type": "dial",
+        "id": 4,
+        "x": 1,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Dash Gear Telemetry",
+          "dataFile": "race-telemetry.csv",
+          "valueKey": "Gear",
+          "min": 1,
+          "max": 6
+        }
+      }
+    ]
+  },
+  "SUSPENSION/STEERING": {
+    "graphs": [
+      {
+        "type": "line",
+        "id": 1,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Steering Lateral Load",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Lateral G"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 2,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Tire Heating & Speed Alignment",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Tire Temp",
+            "Speed"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 3,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Pitch & Acceleration Load",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Longitudinal G"
+          ]
+        }
+      },
+      {
+        "type": "dial",
+        "id": 4,
+        "x": 1,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Peak Cornering G-Force",
+          "dataFile": "race-telemetry.csv",
+          "valueKey": "Lateral G",
+          "min": -2,
+          "max": 2
+        }
+      }
+    ]
+  },
+  "ELECTRICAL": {
+    "graphs": [
+      {
+        "type": "line",
+        "id": 1,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Cooling Fan Temp Diagnostics",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Water Temp"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 2,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "APPS & BPS Sensor Plausibility",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Throttle",
+            "Brake"
+          ]
+        }
+      },
+      {
+        "type": "dial",
+        "id": 3,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "LV System Voltage (Proxy)",
+          "dataFile": "race-telemetry.csv",
+          "valueKey": "Fuel",
+          "min": 0,
+          "max": 100
+        }
+      }
+    ]
+  },
+  "COMPOSITES": {
+    "graphs": [
+      {
+        "type": "line",
+        "id": 1,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Chassis Shear Load (Lateral)",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Lateral G"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 2,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Aerodynamic Monocoque Load",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Longitudinal G"
+          ]
+        }
+      },
+      {
+        "type": "bar",
+        "id": 3,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Vibrational G-Stress Profile",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Engine RPM"
+          ]
+        }
+      }
+    ]
+  },
+  "DRIVER": {
+    "graphs": [
+      {
+        "type": "line",
+        "id": 1,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Speed & Pedal Telemetry",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Speed",
+            "Throttle",
+            "Brake"
+          ]
+        }
+      },
+      {
+        "type": "line",
+        "id": 2,
+        "x": 1,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Shift Points & Engine RPM",
+          "dataFile": "race-telemetry.csv",
+          "xKey": "Lap Time",
+          "yKeys": [
+            "Engine RPM"
+          ]
+        }
+      },
+      {
+        "type": "dial",
+        "id": 3,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Live Driver Speedometer",
+          "dataFile": "race-telemetry.csv",
+          "valueKey": "Speed",
+          "min": 0,
+          "max": 200
+        }
+      },
+      {
+        "type": "dial",
+        "id": 4,
+        "x": 1,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "config": {
+          "title": "Active Gear Indicator",
+          "dataFile": "race-telemetry.csv",
+          "valueKey": "Gear",
+          "min": 1,
+          "max": 6
         }
       }
     ]
